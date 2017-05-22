@@ -1,0 +1,78 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#0099cc"
+    tools:context="com.example.minchul.gaama.view.GamePadActivity">
+
+    <FrameLayout
+        android:id="@+id/fullscreen_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:keepScreenOn="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.example.minchul.gaama.widget.JoystickPad
+                android:id="@+id/joystick_pad"
+                android:layout_width="@dimen/joystick_size"
+                android:layout_height="@dimen/joystick_size"
+
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+
+                android:layout_marginBottom="@dimen/margin_component_bottom"
+                android:layout_marginLeft="@dimen/margin_component_bottom"
+                android:background="@drawable/shape_joystick_bg">
+
+                <Button
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/shape_joystick_dot" />
+
+            </com.example.minchul.gaama.widget.JoystickPad>
+
+            <FrameLayout
+                android:layout_width="@dimen/button_group_size"
+                android:layout_height="@dimen/button_group_size"
+
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+
+                android:layout_marginBottom="@dimen/margin_component_bottom"
+                android:layout_marginRight="@dimen/margin_component_side">
+
+                <com.example.minchul.gaama.widget.GameButton
+                    android:id="@+id/game_button_a"
+                    android:layout_width="@dimen/button_size"
+                    android:layout_height="@dimen/button_size"
+                    android:layout_gravity="left|center_vertical"
+                    android:text="@string/game_pad_a" />
+
+                <com.example.minchul.gaama.widget.GameButton
+                    android:id="@+id/game_button_b"
+                    android:layout_width="@dimen/button_size"
+                    android:layout_height="@dimen/button_size"
+                    android:layout_gravity="top|center_horizontal"
+                    android:text="@string/game_pad_b" />
+
+                <com.example.minchul.gaama.widget.GameButton
+                    android:id="@+id/game_button_c"
+                    android:layout_width="@dimen/button_size"
+                    android:layout_height="@dimen/button_size"
+                    android:layout_gravity="bottom|center_horizontal"
+                    android:text="@string/game_pad_c" />
+
+                <com.example.minchul.gaama.widget.GameButton
+                    android:id="@+id/game_button_d"
+                    android:layout_width="@dimen/button_size"
+                    android:layout_height="@dimen/button_size"
+                    android:layout_gravity="right|center_vertical"
+                    android:text="@string/game_pad_d" />
+            </FrameLayout>
+        </RelativeLayout>
+    </FrameLayout>
+
+</FrameLayout>
