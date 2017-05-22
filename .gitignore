@@ -1,9 +1,14 @@
 *.iml
 .gradle
 /local.properties
-/.idea/workspace.xml
-/.idea/libraries
+
 .DS_Store
 /build
 /captures
 .externalNativeBuild
+
+.idea/
+app/libs/
+blelib/libs/
+blelib/src/main/res/drawable/
+/blelib/src/test/
