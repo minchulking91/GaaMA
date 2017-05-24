@@ -144,9 +144,9 @@ public abstract class HidPeripheral {
     private static final UUID CHARACTERISTIC_SERIAL_NUMBER = BLEUUIDUtils.fromShortValue(0x2A25);
     private static final int DEVICE_INFO_MAX_LENGTH = 20;
 
-    private String manufacturer = "kshoji.jp";
+    private String manufacturer = "com.example";
     private String deviceName = "BLE HID";
-    private String serialNumber = "12345678";
+    private String serialNumber = "000-000-0000";
 
     /**
      * Battery Service
