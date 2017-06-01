@@ -4,10 +4,9 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
-import com.example.blelib.JoystickPeripheral;
+import com.example.blelib.GamePadPeripheral;
 import com.example.minchul.gaama.R;
 import com.example.minchul.gaama.widget.GameButton;
 import com.example.minchul.gaama.widget.JoystickPad;
@@ -23,7 +22,12 @@ public class GamePadActivity extends AbstractBLEActivity implements JoystickPad.
     private GameButton mGameButtonD;
 
     //BLE
-    JoystickPeripheral mJoystickPeripheral;
+    GamePadPeripheral mGamePadPeripheral;
+
+    boolean buttonA = false;
+    boolean buttonB = false;
+    boolean buttonC = false;
+    boolean buttonD = false;
 
     private static final int UI_ANIMATION_DELAY = 300;
     private final Handler mHideHandler = new Handler();
@@ -58,6 +62,8 @@ public class GamePadActivity extends AbstractBLEActivity implements JoystickPad.
             hide();
         }
     };
+    private int dx = 0;
+    private int dy = 0;
 
 
     @Override
@@ -84,9 +90,9 @@ public class GamePadActivity extends AbstractBLEActivity implements JoystickPad.
 
     @Override
     void setupBlePeripheralProvider() {
-        mJoystickPeripheral = new JoystickPeripheral(this);
-        mJoystickPeripheral.setDeviceName(getString(R.string.ble_joystick));
-        mJoystickPeripheral.startAdvertising();
+        mGamePadPeripheral = new GamePadPeripheral(this);
+        mGamePadPeripheral.setDeviceName(getString(R.string.ble_joystick));
+        mGamePadPeripheral.startAdvertising();
     }
 
     @Override
@@ -137,17 +143,36 @@ public class GamePadActivity extends AbstractBLEActivity implements JoystickPad.
     //Joystick Action Listener
     @Override
     public void onStickUp(JoystickPad v) {
-        //TODO send to BLE
+        dx = 0;
+        dy = 0;
+        mGamePadPeripheral.onChangeButtonStatus(0, 0, buttonA, buttonB, buttonC, buttonD, false, false);
     }
 
     @Override
     public void onStickMove(JoystickPad v, int x, int y) {
-        //TODO send to BLE
+        this.dx = x;
+        this.dy = y;
+        mGamePadPeripheral.onChangeButtonStatus(dx, dy, buttonA, buttonB, buttonC, buttonD, false, false);
     }
 
     //GameButton Listener
     @Override
     public void onChangeButtonPressed(View view, boolean pressed) {
-        //TODO send to BLE
+        if( view == mGameButtonA){
+            this.buttonA = pressed;
+        }else if (view == mGameButtonB){
+            this.buttonB = pressed;
+        }else if (view == mGameButtonC){
+            this.buttonC = pressed;
+        }else if( view == mGameButtonD){
+            this.buttonD = pressed;
+        }
+        mGamePadPeripheral.onChangeButtonStatus(dx, dy, buttonA, buttonB, buttonC, buttonD, false, false);
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
 }

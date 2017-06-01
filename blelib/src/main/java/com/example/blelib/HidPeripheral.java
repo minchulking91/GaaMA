@@ -1,4 +1,4 @@
-package com.example.blelib;
+ package com.example.blelib;
 
 import android.annotation.TargetApi;
 import android.bluetooth.BluetoothAdapter;
@@ -27,6 +27,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.example.blelib.util.BLEUUIDUtils;
+
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
@@ -40,8 +43,6 @@ import java.util.TimerTask;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import com.example.blelib.util.BLEUUIDUtils;
-
 @TargetApi(VERSION_CODES.LOLLIPOP)
 public abstract class HidPeripheral {
     private static final String TAG = HidPeripheral.class.getSimpleName();
@@ -49,83 +50,32 @@ public abstract class HidPeripheral {
     /**
      * Main items
      */
-    protected static byte INPUT(final int size) {
-        return (byte) (0x80 | size);
-    }
-
-    protected static byte OUTPUT(final int size) {
-        return (byte) (0x90 | size);
-    }
-
-    protected static byte COLLECTION(final int size) {
-        return (byte) (0xA0 | size);
-    }
-
-    protected static byte FEATURE(final int size) {
-        return (byte) (0xB0 | size);
-    }
-
-    protected static byte END_COLLECTION(final int size) {
-        return (byte) (0xC0 | size);
-    }
+    protected static byte INPUT = (byte)0x81;
+    protected static byte OUTPUT = (byte)0x90;
+    protected static byte COLLECTION = (byte)0xA1;
+    protected static byte FEATUR = (byte)0xB0;
+    protected static byte END_COLLECTION = (byte)0xC0;
 
     /**
      * Global items
      */
-    protected static byte USAGE_PAGE(final int size) {
-        return (byte) (0x04 | size);
-    }
-
-    protected static byte LOGICAL_MINIMUM(final int size) {
-        return (byte) (0x14 | size);
-    }
-
-    protected static byte LOGICAL_MAXIMUM(final int size) {
-        return (byte) (0x24 | size);
-    }
-
-    protected static byte PHYSICAL_MINIMUM(final int size) {
-        return (byte) (0x34 | size);
-    }
-
-    protected static byte PHYSICAL_MAXIMUM(final int size) {
-        return (byte) (0x44 | size);
-    }
-
-    protected static byte UNIT_EXPONENT(final int size) {
-        return (byte) (0x54 | size);
-    }
-
-    protected static byte UNIT(final int size) {
-        return (byte) (0x64 | size);
-    }
-
-    protected static byte REPORT_SIZE(final int size) {
-        return (byte) (0x74 | size);
-    }
-
-    protected static byte REPORT_ID(final int size) {
-        return (byte) (0x84 | size);
-    }
-
-    protected static byte REPORT_COUNT(final int size) {
-        return (byte) (0x94 | size);
-    }
+    protected static byte USAGE_PAGE = (byte)0x05;
+    protected static byte LOGICAL_MINIMUM = (byte)0x15;
+    protected static byte LOGICAL_MAXIMUM = (byte)0x25;
+    protected static byte PHYSICAL_MINIMUM = (byte)0x34;
+    protected static byte PHYSICAL_MAXIMUM = (byte)0x44;
+    protected static byte UNIT_EXPONENT = (byte)0x54;
+    protected static byte UNIT = (byte)0x64;
+    protected static byte REPORT_SIZE = (byte)0x75;
+    protected static byte REPORT_ID = (byte)0x85;
+    protected static byte REPORT_COUNT = (byte)0x95;
 
     /**
      * Local items
      */
-    protected static byte USAGE(final int size) {
-        return (byte) (0x08 | size);
-    }
-
-    protected static byte USAGE_MINIMUM(final int size) {
-        return (byte) (0x18 | size);
-    }
-
-    protected static byte USAGE_MAXIMUM(final int size) {
-        return (byte) (0x28 | size);
-    }
+    protected static byte USAGE = (byte)0x09;
+    protected static byte USAGE_MINIMUM = (byte)0x19;
+    protected static byte USAGE_MAXIMUM = (byte)0x29;
 
     protected static byte LSB(final int value) {
         return (byte) (value & 0xff);
@@ -142,11 +92,20 @@ public abstract class HidPeripheral {
     private static final UUID CHARACTERISTIC_MANUFACTURER_NAME = BLEUUIDUtils.fromShortValue(0x2A29);
     private static final UUID CHARACTERISTIC_MODEL_NUMBER = BLEUUIDUtils.fromShortValue(0x2A24);
     private static final UUID CHARACTERISTIC_SERIAL_NUMBER = BLEUUIDUtils.fromShortValue(0x2A25);
+    private static final UUID CHARACTERISTIC_PNP_ID = BLEUUIDUtils.fromShortValue(0x2A50);
+
     private static final int DEVICE_INFO_MAX_LENGTH = 20;
 
     private String manufacturer = "com.example";
     private String deviceName = "BLE HID";
     private String serialNumber = "000-000-0000";
+    //// TODO: 2017-05-29 pnp
+    private static byte[] PNP_VALUE = {
+            0x01, //uint8 vendorIDSource
+            0x04, (byte)0x01, //uint16 vendorI 0x0401
+            0x00, 0x01, //uint16 productId 0x0001
+            0x00, 0x01 //uint16 proudctVersion 0x0001
+    };
 
     /**
      * Battery Service
@@ -170,6 +129,13 @@ public abstract class HidPeripheral {
      * @return Report Map data
      */
     protected abstract byte[] getReportMap();
+
+    /**
+     * @return
+     */
+    protected byte[] getPNPID() {
+        return PNP_VALUE;
+    }
 
     /**
      * HID Input Report
@@ -295,7 +261,7 @@ public abstract class HidPeripheral {
             try {
                 serviceAdded = gattServer.addService(service);
             } catch (final Exception e) {
-                Log.d(TAG, "Adding Service failed", e);
+                Log.e(TAG, "Adding Service failed", e);
             }
         }
         Log.d(TAG, "Service: " + service.getUuid() + " added.");
@@ -320,7 +286,10 @@ public abstract class HidPeripheral {
             final BluetoothGattCharacteristic characteristic = new BluetoothGattCharacteristic(CHARACTERISTIC_SERIAL_NUMBER, BluetoothGattCharacteristic.PROPERTY_READ, BluetoothGattCharacteristic.PERMISSION_READ_ENCRYPTED);
             while (!service.addCharacteristic(characteristic)) ;
         }
-
+        {
+            final BluetoothGattCharacteristic characteristic = new BluetoothGattCharacteristic(CHARACTERISTIC_PNP_ID, BluetoothGattCharacteristic.PROPERTY_READ, BluetoothGattCharacteristic.PERMISSION_READ_ENCRYPTED);
+            while (!service.addCharacteristic(characteristic)) ;
+        }
         return service;
     }
 
@@ -575,7 +544,6 @@ public abstract class HidPeripheral {
 
                                         // successfully bonded
                                         context.unregisterReceiver(this);
-
                                         handler.post(new Runnable() {
                                             @Override
                                             public void run() {
@@ -675,6 +643,20 @@ public abstract class HidPeripheral {
                         gattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, 0, serialNumber.getBytes(StandardCharsets.UTF_8));
                     } else if (BLEUUIDUtils.matches(CHARACTERISTIC_MODEL_NUMBER, characteristicUuid)) {
                         gattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, 0, deviceName.getBytes(StandardCharsets.UTF_8));
+                    } else if (BLEUUIDUtils.matches(CHARACTERISTIC_PNP_ID, characteristicUuid)) {
+                        if (offset == 0) {
+                            gattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, 0, getPNPID());
+                        } else {
+                            final int remainLength = getPNPID().length - offset;
+                            if (remainLength > 0) {
+                                final byte[] data = new byte[remainLength];
+                                System.arraycopy(getReportMap(), offset, data, 0, remainLength);
+                                gattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset, data);
+                            } else {
+                                gattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset, null);
+                            }
+                        }
+
                     } else if (BLEUUIDUtils.matches(CHARACTERISTIC_BATTERY_LEVEL, characteristicUuid)) {
                         gattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, 0, new byte[]{0x64}); // always 100%
                     } else {
@@ -767,6 +749,7 @@ public abstract class HidPeripheral {
             }
         }
     };
+
 
     /**
      * Set the manufacturer name
