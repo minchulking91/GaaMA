@@ -99,12 +99,12 @@ public abstract class HidPeripheral {
     private String manufacturer = "com.example";
     private String deviceName = "BLE HID";
     private String serialNumber = "000-000-0000";
-    //// TODO: 2017-05-29 pnp
+
     private static byte[] PNP_VALUE = {
             0x01, //uint8 vendorIDSource
-            0x04, (byte)0x01, //uint16 vendorI 0x0401
-            0x00, 0x01, //uint16 productId 0x0001
-            0x00, 0x01 //uint16 proudctVersion 0x0001
+            0x01, 0x04, //uint16 vendorI 0x0401
+            0x01, 0x00, //uint16 productId 0x0001
+            0x01, 0x00 //uint16 proudctVersion 0x0001
     };
 
     /**
