@@ -4,25 +4,22 @@ import android.content.Context;
 
 public class GamePadPeripheral extends HidPeripheral {
 
-    /**
-     *
-     */
     private static final byte[] REPORT_MAP = {
             USAGE_PAGE, 0x01, //UsagePage (Generic Desktop)
             USAGE, 0x04, //Usage (Game Pad)
             COLLECTION, 0x01, //Collection (Application)
             USAGE, 0x01, //Usage (Pointer)
-                COLLECTION, 0x00, //Collection (Physical)
+            COLLECTION, 0x00, //Collection (Physical)
 
-                USAGE, 0x30, //Usage (X)
-                USAGE, 0x31, //Usage (Y)
-                LOGICAL_MINIMUM, (byte)0xFF, //Logical Minimum (-1)
-                LOGICAL_MAXIMUM, 0x01, //Logical Maximum (1)
-                REPORT_COUNT, 0x02, //Report Count (2)
-                REPORT_SIZE, 0x02, //Report Size (2)
-                INPUT, 0x02, //nput (Data, Variable, Absolute, No Null)
+            USAGE, 0x30, //Usage (X)
+            USAGE, 0x31, //Usage (Y)
+            LOGICAL_MINIMUM, (byte)0xFF, //Logical Minimum (-1)
+            LOGICAL_MAXIMUM, 0x01, //Logical Maximum (1)
+            REPORT_COUNT, 0x02, //Report Count (2)
+            REPORT_SIZE, 0x02, //Report Size (2)
+            INPUT, 0x02, //nput (Data, Variable, Absolute, No Null)
 
-                END_COLLECTION, //End Collectionhr
+            END_COLLECTION, //End Collectionhr
 
             REPORT_COUNT, 0x04, //Report Count (4)
             REPORT_SIZE, 0x01, //Report Size (1)
@@ -52,26 +49,10 @@ public class GamePadPeripheral extends HidPeripheral {
      */
 
     public GamePadPeripheral(final Context context) throws UnsupportedOperationException {
-        super(context.getApplicationContext(), true, false, false, 10);
+        super(context, true, false, false, 10);
     }
 
     public void onChangeButtonStatus(final int dx, final int dy, final boolean btn1, final boolean btn2, final boolean btn3, final boolean btn4, final boolean btn5, final boolean btn6) {
-        byte pointer = 0;
-        if (dy == 0) {
-            pointer |= 0b0000;
-        }else if(dy > 0){
-            pointer |= 0b0100;
-        }else{
-            pointer |= 0b1100;
-        }
-
-        if(dx == 0){
-            pointer |= 0b00;
-        }else if(dx > 0){
-            pointer |= 0b01;
-        }else {
-            pointer |= 0b11;
-        }
 
         byte buttons = 0;
         if(btn1){
@@ -93,9 +74,10 @@ public class GamePadPeripheral extends HidPeripheral {
             buttons = (byte)(buttons | 0b100000);
         }
 
-        final byte[] report = new byte[2];
-        report[0] = pointer;
-        report[1] = buttons;
+        final byte[] report = new byte[3];
+        report[0] = (byte)dx;
+        report[1] = (byte)dy;
+        report[2] = buttons;
 
         this.addInputReport(report);
 

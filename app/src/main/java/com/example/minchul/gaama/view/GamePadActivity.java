@@ -1,12 +1,16 @@
 package com.example.minchul.gaama.view;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 
 import com.example.blelib.GamePadPeripheral;
+import com.example.minchul.gaama.GaaMaService;
 import com.example.minchul.gaama.R;
 import com.example.minchul.gaama.widget.GameButton;
 import com.example.minchul.gaama.widget.JoystickPad;
@@ -20,9 +24,6 @@ public class GamePadActivity extends AbstractBLEActivity implements JoystickPad.
     private GameButton mGameButtonB;
     private GameButton mGameButtonC;
     private GameButton mGameButtonD;
-
-    //BLE
-    GamePadPeripheral mGamePadPeripheral;
 
     boolean buttonA = false;
     boolean buttonB = false;
@@ -85,14 +86,13 @@ public class GamePadActivity extends AbstractBLEActivity implements JoystickPad.
         mGameButtonB.setGameButtonListener(this);
         mGameButtonC.setGameButtonListener(this);
         mGameButtonD.setGameButtonListener(this);
-
     }
 
+
     @Override
-    void setupBlePeripheralProvider() {
-        mGamePadPeripheral = new GamePadPeripheral(this);
-        mGamePadPeripheral.setDeviceName(getString(R.string.ble_joystick));
-        mGamePadPeripheral.startAdvertising();
+    protected void startBlePeripheralService() {
+        Intent intent = new Intent(this, GaaMaService.class);
+        startService(intent);
     }
 
     @Override
@@ -100,6 +100,29 @@ public class GamePadActivity extends AbstractBLEActivity implements JoystickPad.
         super.onPostCreate(savedInstanceState);
 
         delayedHide(100);
+    }
+
+    @Override
+    public void onBackPressed() {
+        final AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+        alertDialog.setTitle(getString(R.string.title_exit));
+        alertDialog.setMessage(getString(R.string.message_exit));
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(android.R.string.cancel),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(final DialogInterface dialog, final int which) {
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(android.R.string.ok),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        stopService(new Intent(GamePadActivity.this, GaaMaService.class));
+                        finish();
+                    }
+                });
+        alertDialog.show();
     }
 
     private void toggle() {
@@ -145,34 +168,45 @@ public class GamePadActivity extends AbstractBLEActivity implements JoystickPad.
     public void onStickUp(JoystickPad v) {
         dx = 0;
         dy = 0;
-        mGamePadPeripheral.onChangeButtonStatus(0, 0, buttonA, buttonB, buttonC, buttonD, false, false);
+        onChangeButtonStatus();
+
+    }
+
+    private void onChangeButtonStatus() {
+        Intent intent = new Intent(this, GaaMaService.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt("dx", dx);
+        bundle.putInt("dy", dy);
+        bundle.putBoolean("buttonA", buttonA);
+        bundle.putBoolean("buttonB", buttonB);
+        bundle.putBoolean("buttonC", buttonC);
+        bundle.putBoolean("buttonD", buttonD);
+        bundle.putBoolean("buttonE", false);
+        bundle.putBoolean("buttonF", false);
+        intent.putExtras(bundle);
+        startService(intent);
     }
 
     @Override
     public void onStickMove(JoystickPad v, int x, int y) {
         this.dx = x;
         this.dy = y;
-        mGamePadPeripheral.onChangeButtonStatus(dx, dy, buttonA, buttonB, buttonC, buttonD, false, false);
+        onChangeButtonStatus();
     }
 
     //GameButton Listener
     @Override
     public void onChangeButtonPressed(View view, boolean pressed) {
-        if( view == mGameButtonA){
+        if (view == mGameButtonA) {
             this.buttonA = pressed;
-        }else if (view == mGameButtonB){
+        } else if (view == mGameButtonB) {
             this.buttonB = pressed;
-        }else if (view == mGameButtonC){
+        } else if (view == mGameButtonC) {
             this.buttonC = pressed;
-        }else if( view == mGameButtonD){
+        } else if (view == mGameButtonD) {
             this.buttonD = pressed;
         }
-        mGamePadPeripheral.onChangeButtonStatus(dx, dy, buttonA, buttonB, buttonC, buttonD, false, false);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
+        onChangeButtonStatus();
     }
 
 }

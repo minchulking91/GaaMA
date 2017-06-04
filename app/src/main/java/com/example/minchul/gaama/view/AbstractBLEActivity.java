@@ -45,11 +45,9 @@ public abstract class AbstractBLEActivity extends AppCompatActivity {
             });
             alertDialog.show();
         } else {
-            setupBlePeripheralProvider();
+            startBlePeripheralService();
         }
     }
-
-    abstract void setupBlePeripheralProvider();
 
     @Override
     protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
@@ -83,9 +81,11 @@ public abstract class AbstractBLEActivity extends AppCompatActivity {
                 });
                 alertDialog.show();
             } else {
-                setupBlePeripheralProvider();
+                startBlePeripheralService();
             }
         }
     }
+
+    protected abstract void startBlePeripheralService();
 
 }

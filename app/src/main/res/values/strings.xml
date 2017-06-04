@@ -10,9 +10,10 @@
 
     <string name="requires_bl_enabled">This app requires bluetooth enabled.</string>
     <string name="ble_perip_not_supported">Bluetooth LE Peripheral is not supported on this device. The app will exit.</string>
-    <string name="ble_joystick">BLE Joystick</string>
-    <string name="ble_keyboard">BLE Keyboard</string>
-    <string name="ble_mouse">BLE Mouse</string>
+    <string name="ble_joystick">GaaMa BLE Joystick</string>
     <string name="ble_hid">BLE HID</string>
     <string name="not_supported">Not supported</string>
+    <string name="service_is_running">서비스가 실행중 입니다.</string>
+    <string name="title_exit">종료</string>
+    <string name="message_exit">종료하시겠습니까?</string>
 </resources>
