@@ -99,14 +99,21 @@ public abstract class HidPeripheral {
     private String serialNumber = "c";
 
     private static byte[] RESPONSE_PNP_ID = {
-            0x01, //vendorIDSource
-//            0x01, 0x04, //vendorI 0x0401
-//            0x01, 0x00, //productId 0x0001
-//            0x01, 0x00 //product Version 0x0001
-            0x5E, 0x04, //vendorI 0x0401
-            0x28, 0x02, //productId 0x0001
-            0x03, 0x01 //product Version 0x0001
+            0x02, //vendorIDSource
+            0x01, 0x04, //vendorI 0x0401
+            0x01, 0x00, //productId 0x0001
+            0x01, 0x00 //product Version 0x0001
+
+//            (byte)0x5E, 0x04, //vendorI 045E
+//            (byte)0x19, (byte)0x07, //productId 028E
+//            0x03, 0x01 //product Version 0103
     };
+/**
+ * Xinput
+ USB\VID_ 045E &PID_ 028E &REV_0103
+ Dinput USB\VID_11C1&PID_9106&REV_0103
+ */
+
 
     /**
      * Battery Service
@@ -286,10 +293,10 @@ public abstract class HidPeripheral {
             final BluetoothGattCharacteristic characteristic = new BluetoothGattCharacteristic(CHARACTERISTIC_SERIAL_NUMBER, BluetoothGattCharacteristic.PROPERTY_READ, BluetoothGattCharacteristic.PERMISSION_READ_ENCRYPTED);
             while (!service.addCharacteristic(characteristic)) ;
         }
-        {
-            final BluetoothGattCharacteristic characteristic = new BluetoothGattCharacteristic(CHARACTERISTIC_PNP_ID, BluetoothGattCharacteristic.PROPERTY_READ, BluetoothGattCharacteristic.PERMISSION_READ_ENCRYPTED);
-            while (!service.addCharacteristic(characteristic)) ;
-        }
+//        {
+//            final BluetoothGattCharacteristic characteristic = new BluetoothGattCharacteristic(CHARACTERISTIC_PNP_ID, BluetoothGattCharacteristic.PROPERTY_READ, BluetoothGattCharacteristic.PERMISSION_READ_ENCRYPTED);
+//            while (!service.addCharacteristic(characteristic)) ;
+//        }
         return service;
     }
 
@@ -658,12 +665,13 @@ public abstract class HidPeripheral {
                         gattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, 0, serialNumber.getBytes(StandardCharsets.UTF_8));
                     } else if (BLEUUIDUtils.matches(CHARACTERISTIC_MODEL_NUMBER, characteristicUuid)) {
                         gattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, 0, deviceName.getBytes(StandardCharsets.UTF_8));
-                    } else if (BLEUUIDUtils.matches(CHARACTERISTIC_PNP_ID, characteristicUuid)) {
-                        gattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, 0, RESPONSE_PNP_ID);
+//                    } else if (BLEUUIDUtils.matches(CHARACTERISTIC_PNP_ID, characteristicUuid)) {
+//                        gattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, 0, RESPONSE_PNP_ID);
                     } else if (BLEUUIDUtils.matches(CHARACTERISTIC_BATTERY_LEVEL, characteristicUuid)) {
                         gattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, 0, new byte[]{0x64}); // always 100%
                     } else {
                         gattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, 0, characteristic.getValue());
+
                     }
                 }
             });
