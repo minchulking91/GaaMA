@@ -6,165 +6,42 @@ import android.util.Log;
 public class GamePadPeripheral extends HidPeripheral {
 
     private static final byte[] REPORT_MAP = {
-            0x05, 0x01, //	Usage Page (Generic Desktop)
-            0x09, 0x05, //	Usage (Game Pad)
-            (byte)0xA1, 0x01, //	Collection (Application)
+            USAGE_PAGE, 0x01, //UsagePage (Generic Desktop)
+            USAGE, 0x05, //Usage (Game Pad)
+            COLLECTION, 0x01, //Collection (Application)
+            USAGE, 0x01, //Usage (Pointer)
+            COLLECTION, 0x00, //Collection (Physical)
+            LOGICAL_MINIMUM, 0x00,
+            0x26, (byte)0xFF, 0x00,
+            PHYSICAL_MINIMUM, 0x00,
+            0x46, (byte)0xFF, 0x00,
+            USAGE, 0x30, //Usage (X)
+            USAGE, 0x31, //Usage (Y)
+            REPORT_COUNT, 0x02, //Report Count (2)
+            REPORT_SIZE, 0x08, //Report Size (2)
+            INPUT, 0x02, //nput (Data, Variable, Absolute, No Null)
 
-            0x05, 0x01, //		Usage Page (Generic Desktop)
-            0x09, 0x3A, //		Usage (Counted Buffer)		;XXX
-            (byte)0xA1, 0x02, //		Collection (Logical)
+            END_COLLECTION, //End Collectionhr
 
-            //; padding
-            0x75, 0x08, //			Report Size (8)
-            (byte)0x95, 0x01, //			Report Count (1)
-            (byte)0x81, 0x01, //			Input (Constant)
+//            REPORT_COUNT, 0x04, //Report Count (4)
+//            REPORT_SIZE, 0x01, //Report Size (1)
+//            INPUT, 0x03, //Input (Constant, Variable, Absolute)
 
-            //; byte count
-            0x75, 0x08, //			Report Size (8)
-            (byte)0x95, 0x01, //			Report Count (1)
-            0x05, 0x01, //			Usage Page (Generic Desktop)
-            0x09, 0x3B, //			Usage (Byte Count)		;XXX
-            (byte)0x81, 0x01, //			Input (Constant)
+            USAGE_PAGE, 0x09, //Usage Page (Buttons)
+            USAGE_MINIMUM, 0x01, //Usage Minimum (Button 1)
+            USAGE_MAXIMUM, 0x06, //Usage Maximum (Button 6)
+            LOGICAL_MINIMUM, 0x00, //Logical Minimum (0)
+            LOGICAL_MAXIMUM, 0x01, //Logical Maximum (1)
+            PHYSICAL_MINIMUM, 0x00,
+            PHYSICAL_MAXIMUM, 0x00,
+            REPORT_COUNT, 0x06, //Report Count (6)
+            REPORT_SIZE, 0x01, //Report Size (1)
+            INPUT, 0x02, //Input (Data, Variable, Absolute)
 
-//			; D-pad
-            0x05, 0x01, //			Usage Page (Generic Desktop)
-            0x09, 0x01, //			Usage (Pointer)
-            (byte)0xA1, 0x00, //			Collection (Physical)
-            0x75, 0x01, //				Report Size (1)
-            0x15, 0x00, //				Logical Minimum (0)
-            0x25, 0x01, //				Logical Maximum (1)
-            0x35, 0x00, //				Physical Minimum (0)
-            0x45, 0x01, //				Physical Maximum (1)
-            (byte)0x95, 0x04, //				Report Count (4)
-            0x05, 0x01, //				Usage Page (Generic Desktop)
-            0x09, (byte)0x90, //				Usage (D-pad Up)
-            0x09, (byte)0x91, //				Usage (D-pad Down)
-            0x09, (byte)0x93, //				Usage (D-pad Left)
-            0x09, (byte)0x92, //				Usage (D-pad Right)
-            (byte)0x81, 0x02, //				Input (Data,Variable,Absolute)
-            (byte)0xC0,//	End Collection
-
-            //		; start, back, stick press
-            0x75, 0x01, //			Report Size (1)
-            0x15, 0x00, //			Logical Minimum (0)
-            0x25, 0x01, //			Logical Maximum (1)
-            0x35, 0x00, //			Physical Minimum (0)
-            0x45, 0x01, //			Physical Maximum (1)
-            (byte)0x95, 0x04, //			Report Count (4)
-            0x05, 0x09, //			Usage Page (Button)
-            0x19, 0x07, //			Usage Minimum (Button 7)
-            0x29, 0x0A, //			Usage Maximum (Button 10)
-            (byte)0x81, 0x02, //			Input (Data,Variable,Absolute)
-
-            //; reserved
-            0x75, 0x01, //			Report Size (1)
-            (byte)0x95, 0x08, //			Report Count (8)
-            (byte)0x81, 0x01, //			Input (Constant)
-
-            //; analog buttons
-            0x75, 0x08, //			Report Size (8)
-            0x15, 0x00, //			Logical Minimum (0)
-            0x26, (byte)0xFF, 0x00,	//		Logical Maximum (255)
-            0x35, 0x00, //			Physical Minimum (0)
-            0x46, (byte)0xFF, 0x00,	//		Physical Maximum (255)
-            (byte)0x95, 0x06, //			Report Count (6)
-            0x05, 0x09, //			Usage Page (Button)
-            0x19, 0x01, //			Usage Minimum (Button 1)
-            0x29, 0x06, //			Usage Minimum (Button 6)
-            (byte)0x81, 0x02, //			Input (Data,Variable,Absolute)
-
-            //; triggers
-            0x75, 0x08, //			Report Size (8)
-            0x15, 0x00, //			Logical Minimum (0)
-            0x26, (byte)0xFF, 0x00,	//		Logical Maximum (255)
-            0x35, 0x00, //			Physical Minimum (0)
-            0x46, (byte)0xFF, 0x00,	//		Physical Maximum (255)
-            (byte)0x95, 0x02, //			Report Count (2)
-            0x05, 0x01, //			Usage Page (Generic Desktop)
-            0x09, 0x32, //			Usage (Z)
-            0x09, 0x35, //			Usage (Rz)
-            (byte)0x81, 0x02, //			Input (Data,Variable,Absolute)
-
-            //; sticks
-            0x75, 0x10, //			Report Size (16)
-            0x16, 0x00, (byte)0x80,	//		Logical Minimum (-32768)
-            0x26, (byte)0xFF, 0x7F,	//		Logical Maximum (32767)
-            0x36, 0x00, (byte)0x80,	//		Physical Minimum (-32768)
-            0x46, (byte)0xFF, 0x7F,	//		Physical Maximum (32767)
-
-            0x05, 0x01, //			Usage Page (Generic Desktop)
-            0x09, 0x01, //			Usage (Pointer)
-            (byte)0xA1, 0x00, //			Collection (Physical)
-            (byte)0x95, 0x02, //				Report Count (2)
-            0x05, 0x01, //				Usage Page (Generic Desktop)
-            0x09, 0x30, //				Usage (X)
-            0x09, 0x31, //				Usage (Y)			;north positive
-            (byte)0x81, 0x02, //				Input (Data,Variable,Absolute)
-            (byte)0xC0, //	End Collection
-
-            0x05, 0x01, //			Usage Page (Generic Desktop)
-            0x09, 0x01, //			Usage (Pointer)
-            (byte)0xA1, 0x00, //			Collection (Physical)
-            (byte)0x95, 0x02, //				Report Count (2)
-            0x05, 0x01, //				Usage Page (Generic Desktop)
-            0x09, 0x33, //				Usage (Rx)
-            0x09, 0x34, //				Usage (Ry)			;north positive
-            (byte)0x81, 0x02, //				Input (Data,Variable,Absolute)
-            (byte)0xC0,			//End Collection
-
-            (byte)0xC0,		//End Collection
-
-            0x05, 0x01, //		Usage Page (Generic Desktop)
-            0x09, 0x3A, //		Usage (Counted Buffer)		;XXX
-            (byte)0xA1, 0x02, //		Collection (Logical)
-
-            //; padding
-            0x75, 0x08, //			Report Size (8)
-            (byte)0x95, 0x01, //			Report Count (1)
-            (byte)0x91, 0x01, //			Output (Constant)
-
-            //; byte count
-            0x75, 0x08, //			Report Size (8)
-            (byte)0x95, 0x01, //			Report Count (1)
-            0x05, 0x01, //			Usage Page (Generic Desktop)
-            0x09, 0x3B, //			Usage (Byte Count)		;XXX
-            (byte)0x91, 0x01, //			Output (Constant)
-
-//			; padding
-            0x75, 0x08, //			Report Size (8)
-            (byte)0x95, 0x01, //			Report Count (1)
-            (byte)0x91, 0x01, //			Output (Constant)
-
-            //	; left actuator
-            0x75, 0x08, //			Report Size (8)
-            0x15, 0x00, //			Logical Minimum (0)
-            0x26, (byte)0xFF, 0x00,	//		Logical Maximum (255)
-            0x35, 0x00, //			Physical Minimum (0)
-            0x46, (byte)0xFF, 0x00,	//		Physical Maximum (255)
-            (byte)0x95, 0x01, //			Report Count (1)
-            0x06, 0x00, (byte)0xFF,	//		Usage Page (vendor-defined)
-            0x09, 0x01, //			Usage (1)
-            (byte)0x91, 0x02, //			Output (Data,Variable,Absolute)
-
-            //; padding
-            0x75, 0x08, //			Report Size (8)
-            (byte)0x95, 0x01, //			Report Count (1)
-            (byte)0x91, 0x01, //			Output (Constant)
-
-            //; right actuator
-            0x75, 0x08, //			Report Size (8)
-            0x15, 0x00, //			Logical Minimum (0)
-            0x26, (byte)0xFF, 0x00, //			Logical Maximum (255)
-            0x35, 0x00, //			Physical Minimum (0)
-            0x46, (byte)0xFF, 0x00, //			Physical Maximum (255)
-            (byte)0x95, 0x01, //			Report Count (1)
-            0x06, 0x00, (byte)0xFF, //			Usage Page (vendor-defined)
-            0x09, 0x02, //			Usage (2)
-            (byte)0x91, 0x02, //			Output (Data,Variable,Absolute)
-
-            (byte)0xC0,//		End Collection
-
-            (byte)0xC0, //	End Collection
+            REPORT_COUNT, 0x02, //Report Count (2)
+            REPORT_SIZE, 0x01, //Report Size (1)
+            INPUT, 0x03, //Input (Constant, Variable, Absolute)
+            END_COLLECTION, //End Collection
     };
     private static final String TAG = GamePadPeripheral.class.getSimpleName();
 
@@ -182,35 +59,31 @@ public class GamePadPeripheral extends HidPeripheral {
 
     public void onChangeButtonStatus(final int dx, final int dy, final boolean btn1, final boolean btn2, final boolean btn3, final boolean btn4, final boolean btn5, final boolean btn6) {
 
-        int stick_x = dx < 0 ? dx * -1 : dx;
-        int stick_y = dy < 0 ? dy * -1 : dy;
+        byte buttons = 0;
+        if(btn1){
+            buttons = 0x1;
+        }
+        if(btn2){
+            buttons = (byte)(buttons | 0b10);
+        }
+        if(btn3){
+            buttons = (byte)(buttons | 0b100);
+        }
+        if(btn4){
+            buttons = (byte)(buttons | 0b1000);
+        }
+        if(btn5){
+            buttons = (byte)(buttons | 0b10000);
+        }
+        if(btn6){
+            buttons = (byte)(buttons | 0b100000);
+        }
 
-        byte buttonA = (byte) (btn1 ? 0xFF : 0x00);
-        byte buttonB = (byte) (btn2 ? 0xFF : 0x00);
-        byte buttonC = (byte) (btn3 ? 0xFF : 0x00);
-        byte buttonD = (byte) (btn4 ? 0xFF : 0x00);
+        final byte[] report = new byte[3];
+        report[0] = (byte)(dx + 128);
+        report[1] = (byte)(dy + 128);
+        report[2] = buttons;
 
-        final byte[] report = new byte[20];
-        report[0] = 0x00; //constant
-        report[1] = 0x14; //byte count
-        report[2] = 0x00; //d-pad & start, back, stick press
-        report[3] = 0x00; //reserved
-        report[4] = buttonA; //button1 a
-        report[5] = buttonB; //button2 b
-        report[6] = buttonC; //button3 x
-        report[7] = buttonD; //button4 y
-        report[8] = 0x00; //button5 black
-        report[9] = 0x00; //button6 white
-        report[10] = 0x00; //L trigger
-        report[11] = 0x00; //R trigger
-        report[12] = (byte)(stick_x); //left stick x
-        report[13] = dx < 0 ? (byte)(stick_x>>8 | 0x80) : (byte)(stick_x>>8); //left stick x
-        report[14] = (byte)(stick_y); //left stick y
-        report[15] = dy < 0 ? (byte)(stick_y>>8 | 0x80) : (byte)(stick_y>>8);  //left stick y
-        report[16] = 0x00; //right stick x
-        report[17] = 0x00; //right stick x
-        report[18] = 0x00; //right stick y
-        report[19] = 0x00; //right stick y
         this.addInputReport(report);
 
     }

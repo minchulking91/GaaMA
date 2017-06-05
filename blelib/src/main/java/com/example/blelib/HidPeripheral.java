@@ -61,8 +61,8 @@ public abstract class HidPeripheral {
     protected static byte USAGE_PAGE = (byte) 0x05;
     protected static byte LOGICAL_MINIMUM = (byte) 0x15;
     protected static byte LOGICAL_MAXIMUM = (byte) 0x25;
-    protected static byte PHYSICAL_MINIMUM = (byte) 0x34;
-    protected static byte PHYSICAL_MAXIMUM = (byte) 0x44;
+    protected static byte PHYSICAL_MINIMUM = (byte) 0x35;
+    protected static byte PHYSICAL_MAXIMUM = (byte) 0x45;
     protected static byte UNIT_EXPONENT = (byte) 0x54;
     protected static byte UNIT = (byte) 0x64;
     protected static byte REPORT_SIZE = (byte) 0x75;

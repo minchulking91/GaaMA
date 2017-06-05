@@ -84,7 +84,7 @@ public class JoystickPad extends Joystick implements JoystickListener {
         } else if (degree < -90 && degree >= -180) {
             xRatio = -((degree <= -135) ? 1 : (Math.abs(degree) - 90) / 45);
         }
-        return Math.round((xRatio * SCALE_32767) * offset);
+        return Math.round((xRatio * SCALE_127) * offset);
     }
 
     private int getYAxisValue(float degree, float offset) {
@@ -98,7 +98,7 @@ public class JoystickPad extends Joystick implements JoystickListener {
         } else if (degree < -90 && degree >= -180) {
             yRatio = (degree >= -135) ? 1 : (180 - Math.abs(degree)) / 45;
         }
-        return Math.round((yRatio * SCALE_32767) * offset);
+        return Math.round((yRatio * SCALE_127) * offset);
     }
 
 }
