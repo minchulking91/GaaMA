@@ -11,6 +11,8 @@ import com.jmedeisis.bugstick.JoystickListener;
  */
 
 public class JoystickPad extends Joystick implements JoystickListener {
+    public static final float SCALE_127 = 127f;
+    public static final float SCALE_32767 = 32767f;
     private JoyStickActionListener joyStickActionListener;
     private long repeatTouchEventDelay = 0;
     private long lastTouchEventMillis = 0;
@@ -82,7 +84,7 @@ public class JoystickPad extends Joystick implements JoystickListener {
         } else if (degree < -90 && degree >= -180) {
             xRatio = -((degree <= -135) ? 1 : (Math.abs(degree) - 90) / 45);
         }
-        return Math.round((xRatio * 127f) * offset);
+        return Math.round((xRatio * SCALE_32767) * offset);
     }
 
     private int getYAxisValue(float degree, float offset) {
@@ -96,7 +98,7 @@ public class JoystickPad extends Joystick implements JoystickListener {
         } else if (degree < -90 && degree >= -180) {
             yRatio = (degree >= -135) ? 1 : (180 - Math.abs(degree)) / 45;
         }
-        return Math.round((yRatio * 127f) * offset);
+        return Math.round((yRatio * SCALE_32767) * offset);
     }
 
 }

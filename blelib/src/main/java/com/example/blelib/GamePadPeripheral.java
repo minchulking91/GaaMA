@@ -1,6 +1,7 @@
 package com.example.blelib;
 
 import android.content.Context;
+import android.util.Log;
 
 public class GamePadPeripheral extends HidPeripheral {
 
@@ -165,6 +166,7 @@ public class GamePadPeripheral extends HidPeripheral {
 
             (byte)0xC0, //	End Collection
     };
+    private static final String TAG = GamePadPeripheral.class.getSimpleName();
 
     /**
      *|   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
@@ -180,43 +182,31 @@ public class GamePadPeripheral extends HidPeripheral {
 
     public void onChangeButtonStatus(final int dx, final int dy, final boolean btn1, final boolean btn2, final boolean btn3, final boolean btn4, final boolean btn5, final boolean btn6) {
 
-        byte buttons = 0;
-        if(btn1){
-            buttons = 0x1;
-        }
-        if(btn2){
-            buttons = (byte)(buttons | 0b10);
-        }
-        if(btn3){
-            buttons = (byte)(buttons | 0b100);
-        }
-        if(btn4){
-            buttons = (byte)(buttons | 0b1000);
-        }
-        if(btn5){
-            buttons = (byte)(buttons | 0b10000);
-        }
-        if(btn6){
-            buttons = (byte)(buttons | 0b100000);
-        }
+        int stick_x = dx < 0 ? dx * -1 : dx;
+        int stick_y = dy < 0 ? dy * -1 : dy;
+
+        byte buttonA = (byte) (btn1 ? 0xFF : 0x00);
+        byte buttonB = (byte) (btn2 ? 0xFF : 0x00);
+        byte buttonC = (byte) (btn3 ? 0xFF : 0x00);
+        byte buttonD = (byte) (btn4 ? 0xFF : 0x00);
 
         final byte[] report = new byte[20];
         report[0] = 0x00; //constant
         report[1] = 0x14; //byte count
         report[2] = 0x00; //d-pad & start, back, stick press
         report[3] = 0x00; //reserved
-        report[4] = 0x00; //button1 a
-        report[5] = 0x00; //button2 b
-        report[6] = 0x00; //button3 x
-        report[7] = 0x00; //button4 y
+        report[4] = buttonA; //button1 a
+        report[5] = buttonB; //button2 b
+        report[6] = buttonC; //button3 x
+        report[7] = buttonD; //button4 y
         report[8] = 0x00; //button5 black
         report[9] = 0x00; //button6 white
         report[10] = 0x00; //L trigger
         report[11] = 0x00; //R trigger
-        report[12] = 0x00; //left stick x
-        report[13] = (byte)dx; //left stick x
-        report[14] = 0x00; //left stick y
-        report[15] = (byte)dy; //left stick y
+        report[12] = (byte)(stick_x); //left stick x
+        report[13] = dx < 0 ? (byte)(stick_x>>8 | 0x80) : (byte)(stick_x>>8); //left stick x
+        report[14] = (byte)(stick_y); //left stick y
+        report[15] = dy < 0 ? (byte)(stick_y>>8 | 0x80) : (byte)(stick_y>>8);  //left stick y
         report[16] = 0x00; //right stick x
         report[17] = 0x00; //right stick x
         report[18] = 0x00; //right stick y
