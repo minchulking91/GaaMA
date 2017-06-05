@@ -1,88 +1,119 @@
 package com.example.blelib;
 
 import android.content.Context;
-import android.util.Log;
+import android.content.Intent;
 
 public class GamePadPeripheral extends HidPeripheral {
 
     private static final byte[] REPORT_MAP = {
-            USAGE_PAGE, 0x01, //UsagePage (Generic Desktop)
-            USAGE, 0x05, //Usage (Game Pad)
-            COLLECTION, 0x01, //Collection (Application)
-            USAGE, 0x01, //Usage (Pointer)
-            COLLECTION, 0x00, //Collection (Physical)
-            LOGICAL_MINIMUM, 0x00,
-            0x26, (byte)0xFF, 0x00,
-            PHYSICAL_MINIMUM, 0x00,
-            0x46, (byte)0xFF, 0x00,
-            USAGE, 0x30, //Usage (X)
-            USAGE, 0x31, //Usage (Y)
-            REPORT_COUNT, 0x02, //Report Count (2)
-            REPORT_SIZE, 0x08, //Report Size (2)
-            INPUT, 0x02, //nput (Data, Variable, Absolute, No Null)
+            USAGE_PAGE(1), 0x01, //UsagePage (Generic Desktop)
+            USAGE(1), 0x05, //Usage (Game Pad)
+            COLLECTION(1), 0x01, //Collection (Application)
 
-            END_COLLECTION, //End Collectionhr
+            USAGE(1), 0x01, //Usage (Pointer)
+            COLLECTION(1), 0x00, //Collection (Physical)
+            LOGICAL_MINIMUM(1), 0x00,
+            LOGICAL_MAXIMUM(2), (byte)0xFF, 0x00,
+            PHYSICAL_MINIMUM(1), 0x00,
+            PHYSICAL_MAXIMUM(2), (byte)0xFF, 0x00,
+            USAGE(1), 0x30, //Usage (X)
+            USAGE(1), 0x31, //Usage (Y)
+            USAGE(1), 0x33, //Usage (RX)
+            USAGE(1), 0x34, //Usage (RY)
+            REPORT_COUNT(1), 0x04, //Report Count (4)
+            REPORT_SIZE(1), 0x08, //Report Size (8)
+            INPUT(1), 0x02, //input (Data, Variable, Absolute, No Null)
+            END_COLLECTION(1), //End Collection
 
-//            REPORT_COUNT, 0x04, //Report Count (4)
-//            REPORT_SIZE, 0x01, //Report Size (1)
-//            INPUT, 0x03, //Input (Constant, Variable, Absolute)
+            USAGE(1), 0x39, //Usage (hat switch)
+            LOGICAL_MINIMUM(1), 0x00, LOGICAL_MAXIMUM(1), 0x07,
+            PHYSICAL_MINIMUM(1), 0x00, PHYSICAL_MAXIMUM(1), 0x07,
+            UNIT(1), 0x14, UNIT_EXPONENT(1), 0x00,
+            REPORT_SIZE(1), 0x04, REPORT_COUNT(1), 0x01,
+            INPUT(1), 0x02,
 
-            USAGE_PAGE, 0x09, //Usage Page (Buttons)
-            USAGE_MINIMUM, 0x01, //Usage Minimum (Button 1)
-            USAGE_MAXIMUM, 0x06, //Usage Maximum (Button 6)
-            LOGICAL_MINIMUM, 0x00, //Logical Minimum (0)
-            LOGICAL_MAXIMUM, 0x01, //Logical Maximum (1)
-            PHYSICAL_MINIMUM, 0x00,
-            PHYSICAL_MAXIMUM, 0x00,
-            REPORT_COUNT, 0x06, //Report Count (6)
-            REPORT_SIZE, 0x01, //Report Size (1)
-            INPUT, 0x02, //Input (Data, Variable, Absolute)
+            REPORT_COUNT(1), 0x04, //Report Count (2)
+            REPORT_SIZE(1), 0x01, //Report Size (1)
+            INPUT(1), 0x03, //Input (Constant, Variable, Absolute)
 
-            REPORT_COUNT, 0x02, //Report Count (2)
-            REPORT_SIZE, 0x01, //Report Size (1)
-            INPUT, 0x03, //Input (Constant, Variable, Absolute)
-            END_COLLECTION, //End Collection
+            USAGE_PAGE(1), 0x09, //Usage Page (Buttons)
+            USAGE_MINIMUM(1), 0x01, //Usage Minimum (Button 1)
+            USAGE_MAXIMUM(1), 0x0A, //Usage Maximum (Button 10)
+            LOGICAL_MINIMUM(1), 0x00, //Logical Minimum (0)
+            LOGICAL_MAXIMUM(1), 0x01, //Logical Maximum (1)
+            PHYSICAL_MINIMUM(1), 0x00,
+            PHYSICAL_MAXIMUM(1), 0x01,
+            REPORT_COUNT(1), 0x0A, //Report Count (10)
+            REPORT_SIZE(1), 0x01, //Report Size (1)
+            INPUT(1), 0x02, //Input (Data, Variable, Absolute)
+
+
+            REPORT_COUNT(1), 0x06, //Report Count (6)
+            REPORT_SIZE(1), 0x01, //Report Size (1)
+            INPUT(1), 0x03, //Input (Constant, Variable, Absolute)
+
+            END_COLLECTION(1), //End Collection
     };
     private static final String TAG = GamePadPeripheral.class.getSimpleName();
-
-    /**
-     *|   7   |   6   |   5   |   4   |   3   |   2   |   1   |   0   |
-     *|               PAD             |     Y-axis    |     X-axis    |
-     *|      PAD      |  Btn6 |  Btn5 |  Btn4 |  Btn3 |  Btn2 |  Btn1 |
-     *
-     * axis = 00 [0], 01 [1], 11 [-1]
-     */
 
     public GamePadPeripheral(final Context context) throws UnsupportedOperationException {
         super(context, true, false, false, 10);
     }
 
-    public void onChangeButtonStatus(final int dx, final int dy, final boolean btn1, final boolean btn2, final boolean btn3, final boolean btn4, final boolean btn5, final boolean btn6) {
+    public void onChangeButtonStatus(final int stick_x, final int stick_y, final int stick_rx, final int stick_ry, final int hat_switch,
+                                     final boolean btnA, final boolean btnB, final boolean btnC, final boolean btnD, final boolean btnLB, final boolean btnRB, boolean btnBack, boolean btnStart) {
 
+        byte direction = 0;
+        if(hat_switch == Integer.MAX_VALUE){
+            direction = 15;
+        }else{
+            int abs_hat_switch = Math.abs(hat_switch);
+            if(abs_hat_switch < 23){
+                direction = 2;
+            }else if (abs_hat_switch < 68){
+                direction = (byte) (hat_switch > 0 ? 1 : 3);
+            }else if (abs_hat_switch < 113){
+                direction = (byte) (hat_switch > 0 ? 0 : 4);
+            }else if(abs_hat_switch < 158){
+                direction = (byte) (hat_switch > 0 ? 7 : 5);
+            }else{
+                direction = 6;
+            }
+        }
         byte buttons = 0;
-        if(btn1){
+        byte menu_buttons = 0;
+        if(btnA){
             buttons = 0x1;
         }
-        if(btn2){
+        if(btnB){
             buttons = (byte)(buttons | 0b10);
         }
-        if(btn3){
+        if(btnC){
             buttons = (byte)(buttons | 0b100);
         }
-        if(btn4){
+        if(btnD){
             buttons = (byte)(buttons | 0b1000);
         }
-        if(btn5){
+        if(btnLB){
             buttons = (byte)(buttons | 0b10000);
         }
-        if(btn6){
+        if(btnRB){
             buttons = (byte)(buttons | 0b100000);
         }
-
-        final byte[] report = new byte[3];
-        report[0] = (byte)(dx + 128);
-        report[1] = (byte)(dy + 128);
-        report[2] = buttons;
+        if(btnBack){
+            menu_buttons = (byte)(buttons | 0b1);
+        }
+        if(btnStart){
+            menu_buttons = (byte)(buttons | 0b10);
+        }
+        final byte[] report = new byte[7];
+        report[0] = (byte)(stick_x + 128);
+        report[1] = (byte)(stick_y + 128);
+        report[2] = (byte)(stick_rx + 128);
+        report[3] = (byte)(stick_ry + 128);
+        report[4] = direction;
+        report[5] = buttons;
+        report[6] = menu_buttons;
 
         this.addInputReport(report);
 

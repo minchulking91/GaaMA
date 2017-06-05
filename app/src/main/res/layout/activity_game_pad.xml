@@ -16,14 +16,14 @@
             android:layout_height="match_parent">
 
             <com.example.minchul.gaama.widget.JoystickPad
-                android:id="@+id/joystick_pad"
+                android:id="@+id/left_stick"
                 android:layout_width="@dimen/joystick_size"
                 android:layout_height="@dimen/joystick_size"
 
-                android:layout_alignParentBottom="true"
+                android:layout_alignParentTop="true"
                 android:layout_alignParentLeft="true"
 
-                android:layout_marginBottom="@dimen/margin_component_bottom"
+                android:layout_marginTop="@dimen/margin_component_bottom"
                 android:layout_marginLeft="@dimen/margin_component_bottom"
                 android:background="@drawable/shape_joystick_bg">
 
@@ -33,15 +33,50 @@
                     android:background="@drawable/shape_joystick_dot" />
 
             </com.example.minchul.gaama.widget.JoystickPad>
+            <com.example.minchul.gaama.widget.JoystickPad
+                android:id="@+id/direction_pad"
+                android:layout_width="@dimen/joystick_size"
+                android:layout_height="@dimen/joystick_size"
 
-            <FrameLayout
-                android:layout_width="@dimen/button_group_size"
-                android:layout_height="@dimen/button_group_size"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+
+                android:layout_marginBottom="@dimen/margin_component_bottom"
+                android:layout_marginLeft="120dp"
+                android:background="@drawable/shape_joystick_bg">
+
+                <Button
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/shape_joystick_dot" />
+
+            </com.example.minchul.gaama.widget.JoystickPad>
+            <com.example.minchul.gaama.widget.JoystickPad
+                android:id="@+id/right_stick"
+                android:layout_width="@dimen/joystick_size"
+                android:layout_height="@dimen/joystick_size"
 
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true"
 
                 android:layout_marginBottom="@dimen/margin_component_bottom"
+                android:layout_marginRight="150dp"
+                android:background="@drawable/shape_joystick_bg">
+
+                <Button
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/shape_joystick_dot" />
+
+            </com.example.minchul.gaama.widget.JoystickPad>
+            <FrameLayout
+                android:layout_width="@dimen/button_group_size"
+                android:layout_height="@dimen/button_group_size"
+
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+
+                android:layout_marginTop="@dimen/margin_component_bottom"
                 android:layout_marginRight="@dimen/margin_component_side">
 
                 <com.example.minchul.gaama.widget.GameButton
@@ -72,6 +107,22 @@
                     android:layout_gravity="right|center_vertical"
                     android:text="@string/game_pad_d" />
             </FrameLayout>
+            <com.example.minchul.gaama.widget.GameButton
+                android:layout_marginTop="30dp"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentTop="true"
+                android:id="@+id/btn_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="back"/>
+            <com.example.minchul.gaama.widget.GameButton
+                android:layout_marginTop="80dp"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentTop="true"
+                android:id="@+id/btn_start"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="start"/>
         </RelativeLayout>
     </FrameLayout>
 

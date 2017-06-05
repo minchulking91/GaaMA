@@ -49,32 +49,84 @@ public abstract class HidPeripheral {
     /**
      * Main items
      */
-    protected static byte INPUT = (byte) 0x81;
-    protected static byte OUTPUT = (byte) 0x90;
-    protected static byte COLLECTION = (byte) 0xA1;
-    protected static byte FEATURE = (byte) 0xB0;
-    protected static byte END_COLLECTION = (byte) 0xC0;
+    protected static byte INPUT(final int size) {
+        return (byte) (0x80 | size);
+    }
+
+    protected static byte OUTPUT(final int size) {
+        return (byte) (0x90 | size);
+    }
+
+    protected static byte COLLECTION(final int size) {
+        return (byte) (0xA0 | size);
+    }
+
+    protected static byte FEATURE(final int size) {
+        return (byte) (0xB0 | size);
+    }
+
+    protected static byte END_COLLECTION(final int size) {
+        return (byte) (0xC0);
+    }
 
     /**
      * Global items
      */
-    protected static byte USAGE_PAGE = (byte) 0x05;
-    protected static byte LOGICAL_MINIMUM = (byte) 0x15;
-    protected static byte LOGICAL_MAXIMUM = (byte) 0x25;
-    protected static byte PHYSICAL_MINIMUM = (byte) 0x35;
-    protected static byte PHYSICAL_MAXIMUM = (byte) 0x45;
-    protected static byte UNIT_EXPONENT = (byte) 0x54;
-    protected static byte UNIT = (byte) 0x64;
-    protected static byte REPORT_SIZE = (byte) 0x75;
-    protected static byte REPORT_ID = (byte) 0x85;
-    protected static byte REPORT_COUNT = (byte) 0x95;
+    protected static byte USAGE_PAGE(final int size) {
+        return (byte) (0x04 | size);
+    }
+
+    protected static byte LOGICAL_MINIMUM(final int size) {
+        return (byte) (0x14 | size);
+    }
+
+    protected static byte LOGICAL_MAXIMUM(final int size) {
+        return (byte) (0x24 | size);
+    }
+
+    protected static byte PHYSICAL_MINIMUM(final int size) {
+        return (byte) (0x34 | size);
+    }
+
+    protected static byte PHYSICAL_MAXIMUM(final int size) {
+        return (byte) (0x44 | size);
+    }
+
+    protected static byte UNIT_EXPONENT(final int size) {
+        return (byte) (0x54 | size);
+    }
+
+    protected static byte UNIT(final int size) {
+        return (byte) (0x64 | size);
+    }
+
+    protected static byte REPORT_SIZE(final int size) {
+        return (byte) (0x74 | size);
+    }
+
+    protected static byte REPORT_ID(final int size) {
+        return (byte) (0x84 | size);
+    }
+
+    protected static byte REPORT_COUNT(final int size) {
+        return (byte) (0x94 | size);
+    }
 
     /**
      * Local items
      */
-    protected static byte USAGE = (byte) 0x09;
-    protected static byte USAGE_MINIMUM = (byte) 0x19;
-    protected static byte USAGE_MAXIMUM = (byte) 0x29;
+    protected static byte USAGE(final int size) {
+        return (byte) (0x08 | size);
+    }
+
+    protected static byte USAGE_MINIMUM(final int size) {
+        return (byte) (0x18 | size);
+    }
+
+    protected static byte USAGE_MAXIMUM(final int size) {
+        return (byte) (0x28 | size);
+    }
+
     protected static byte LSB(final int value) {
         return (byte) (value & 0xff);
     }
@@ -131,6 +183,7 @@ public abstract class HidPeripheral {
     private static final UUID CHARACTERISTIC_HID_CONTROL_POINT = BLEUUIDUtils.fromShortValue(0x2A4C);
     private static final UUID CHARACTERISTIC_REPORT = BLEUUIDUtils.fromShortValue(0x2A4D);
     private static final UUID CHARACTERISTIC_PROTOCOL_MODE = BLEUUIDUtils.fromShortValue(0x2A4E);
+
     /**
      * Represents Report Map byte array
      *
@@ -438,7 +491,7 @@ public abstract class HidPeripheral {
      * Starts advertising
      */
     public final boolean startAdvertising() {
-        if(advertising){
+        if (advertising) {
             //already advertising
             return false;
         }
@@ -481,7 +534,7 @@ public abstract class HidPeripheral {
      * Stops advertising
      */
     public final void stopAdvertising() {
-        if(!advertising){
+        if (!advertising) {
             return;
         }
         handler.post(new Runnable() {
@@ -712,13 +765,13 @@ public abstract class HidPeripheral {
                         } else {
                             gattServer.sendResponse(device, requestId, BluetoothGatt.GATT_FAILURE, 0, EMPTY_BYTES);
                         }
-                    }else if (BLEUUIDUtils.matches(DESCRIPTOR_CLIENT_CHARACTERISTIC_CONFIGURATION, descriptor.getUuid())){
+                    } else if (BLEUUIDUtils.matches(DESCRIPTOR_CLIENT_CHARACTERISTIC_CONFIGURATION, descriptor.getUuid())) {
                         final int characteristicProperties = descriptor.getCharacteristic().getProperties();
                         final UUID characteristicUuid = descriptor.getCharacteristic().getUuid();
                         Log.d(TAG, "onDescriptorReadRequest characteristic: " + characteristicUuid);
-                        if(BLEUUIDUtils.matches(CHARACTERISTIC_REPORT, characteristicUuid)){
+                        if (BLEUUIDUtils.matches(CHARACTERISTIC_REPORT, characteristicUuid)) {
 
-                        }else {
+                        } else {
 
                             gattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, 0, new byte[]{0, 0});
                         }

@@ -2,6 +2,7 @@ package com.example.minchul.gaama.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 
 import com.jmedeisis.bugstick.Joystick;
 import com.jmedeisis.bugstick.JoystickListener;
@@ -13,6 +14,7 @@ import com.jmedeisis.bugstick.JoystickListener;
 public class JoystickPad extends Joystick implements JoystickListener {
     public static final float SCALE_127 = 127f;
     public static final float SCALE_32767 = 32767f;
+    public static final String TAG = JoystickPad.class.getSimpleName();
     private JoyStickActionListener joyStickActionListener;
     private long repeatTouchEventDelay = 0;
     private long lastTouchEventMillis = 0;
@@ -48,7 +50,7 @@ public class JoystickPad extends Joystick implements JoystickListener {
         if (joyStickActionListener != null && System.currentTimeMillis() - lastTouchEventMillis >= repeatTouchEventDelay) {
             int x = getXAxisValue(degrees, offset);
             int y = getYAxisValue(degrees, offset);
-            joyStickActionListener.onStickMove(this, x, y);
+            joyStickActionListener.onStickMove(this, x, y, degrees);
             lastTouchEventMillis = System.currentTimeMillis();
         }
     }
@@ -69,7 +71,7 @@ public class JoystickPad extends Joystick implements JoystickListener {
     public interface JoyStickActionListener {
         void onStickUp(JoystickPad v);
 
-        void onStickMove(JoystickPad v, int x, int y);
+        void onStickMove(JoystickPad v, int x, int y, float degrees);
     }
 
 

@@ -7,9 +7,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.View;
 
-import com.example.blelib.GamePadPeripheral;
 import com.example.minchul.gaama.GaaMaService;
 import com.example.minchul.gaama.R;
 import com.example.minchul.gaama.widget.GameButton;
@@ -19,16 +19,17 @@ public class GamePadActivity extends AbstractBLEActivity implements JoystickPad.
 
     //VIEW
     private View mContentView;
-    private JoystickPad mJoystickPad;
+    private JoystickPad mLeftStick;
+    private JoystickPad mRightStick;
+    private JoystickPad mHatSwitch;
     private GameButton mGameButtonA;
     private GameButton mGameButtonB;
     private GameButton mGameButtonC;
     private GameButton mGameButtonD;
-
-    boolean buttonA = false;
-    boolean buttonB = false;
-    boolean buttonC = false;
-    boolean buttonD = false;
+    private GameButton mGameButtonLB;
+    private GameButton mGameButtonRB;
+    private GameButton mGameButtonBack;
+    private GameButton mGameButtonStart;
 
     private static final int UI_ANIMATION_DELAY = 300;
     private final Handler mHideHandler = new Handler();
@@ -63,8 +64,20 @@ public class GamePadActivity extends AbstractBLEActivity implements JoystickPad.
             hide();
         }
     };
-    private int dx = 0;
-    private int dy = 0;
+
+    private int stick_x = 0;
+    private int stick_y = 0;
+    private int stick_rx = 0;
+    private int stick_ry = 0;
+    private int hatswitch = 0;
+    private boolean buttonA = false;
+    private boolean buttonB = false;
+    private boolean buttonC = false;
+    private boolean buttonD = false;
+    private boolean buttonLB = false;
+    private boolean buttonRB = false;
+    private boolean buttonBack = false;
+    private boolean buttonStart = false;
 
 
     @Override
@@ -75,17 +88,24 @@ public class GamePadActivity extends AbstractBLEActivity implements JoystickPad.
 
         mVisible = true;
         mContentView = findViewById(R.id.fullscreen_content);
-        mJoystickPad = (JoystickPad) findViewById(R.id.joystick_pad);
-        mJoystickPad.setJoyStickActionListener(this);
+        mLeftStick = (JoystickPad) findViewById(R.id.left_stick);
+        mRightStick = (JoystickPad) findViewById(R.id.right_stick);
+        mHatSwitch = (JoystickPad) findViewById(R.id.direction_pad);
+        mRightStick.setJoyStickActionListener(this);
+        mLeftStick.setJoyStickActionListener(this);
+        mHatSwitch.setJoyStickActionListener(this);
         mGameButtonA = (GameButton) findViewById(R.id.game_button_a);
         mGameButtonB = (GameButton) findViewById(R.id.game_button_b);
         mGameButtonC = (GameButton) findViewById(R.id.game_button_c);
         mGameButtonD = (GameButton) findViewById(R.id.game_button_d);
-
+        mGameButtonBack = (GameButton) findViewById(R.id.btn_back);
+        mGameButtonStart = (GameButton) findViewById(R.id.btn_start);
         mGameButtonA.setGameButtonListener(this);
         mGameButtonB.setGameButtonListener(this);
         mGameButtonC.setGameButtonListener(this);
         mGameButtonD.setGameButtonListener(this);
+        mGameButtonBack.setGameButtonListener(this);
+        mGameButtonStart.setGameButtonListener(this);
     }
 
 
@@ -169,8 +189,15 @@ public class GamePadActivity extends AbstractBLEActivity implements JoystickPad.
     //Joystick Action Listener
     @Override
     public void onStickUp(JoystickPad v) {
-        dx = 0;
-        dy = 0;
+        if (v == mLeftStick) {
+            stick_x = 0;
+            stick_y = 0;
+        }else if(v == mRightStick){
+            stick_rx = 0;
+            stick_ry = 0;
+        }else if(v == mHatSwitch){
+            hatswitch = Integer.MAX_VALUE;
+        }
         onChangeButtonStatus();
 
     }
@@ -179,22 +206,33 @@ public class GamePadActivity extends AbstractBLEActivity implements JoystickPad.
         Intent intent = new Intent(this, GaaMaService.class);
         intent.putExtra(GaaMaService.GAA_MA_SERVICE_COMMAND, GaaMaService.INPUT_BUTTON_STATUS);
         Bundle bundle = new Bundle();
-        bundle.putInt("dx", dx);
-        bundle.putInt("dy", dy);
-        bundle.putBoolean("buttonA", buttonA);
-        bundle.putBoolean("buttonB", buttonB);
-        bundle.putBoolean("buttonC", buttonC);
-        bundle.putBoolean("buttonD", buttonD);
-        bundle.putBoolean("buttonE", false);
-        bundle.putBoolean("buttonF", false);
+        bundle.putInt(GaaMaService.STICK_X, stick_x);
+        bundle.putInt(GaaMaService.STICK_Y, stick_y);
+        bundle.putInt(GaaMaService.STICK_RX, stick_rx);
+        bundle.putInt(GaaMaService.STICK_RY, stick_ry);
+        bundle.putInt(GaaMaService.HAT_SWITCH, hatswitch);
+        bundle.putBoolean(GaaMaService.BUTTON_A, buttonA);
+        bundle.putBoolean(GaaMaService.BUTTON_B, buttonB);
+        bundle.putBoolean(GaaMaService.BUTTON_C, buttonC);
+        bundle.putBoolean(GaaMaService.BUTTON_D, buttonD);
+        bundle.putBoolean(GaaMaService.BUTTON_BACK, buttonBack);
+        bundle.putBoolean(GaaMaService.BUTTON_START, buttonStart);
+
         intent.putExtras(bundle);
         startService(intent);
     }
 
     @Override
-    public void onStickMove(JoystickPad v, int x, int y) {
-        this.dx = x;
-        this.dy = y;
+    public void onStickMove(JoystickPad v, int x, int y, float degrees) {
+        if(v == mLeftStick) {
+            this.stick_x = x;
+            this.stick_y = y;
+        }else if(v == mRightStick){
+            this.stick_rx = x;
+            this.stick_ry = y;
+        }else if(v == mHatSwitch){
+            hatswitch = (int) degrees;
+        }
         onChangeButtonStatus();
     }
 
@@ -209,6 +247,10 @@ public class GamePadActivity extends AbstractBLEActivity implements JoystickPad.
             this.buttonC = pressed;
         } else if (view == mGameButtonD) {
             this.buttonD = pressed;
+        }else if (view == mGameButtonBack){
+            this.buttonBack = pressed;
+        }else if(view == mGameButtonStart){
+            this.buttonStart = pressed;
         }
         onChangeButtonStatus();
     }

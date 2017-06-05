@@ -20,6 +20,20 @@ public class GaaMaService extends Service {
     public static final int START_ADVERTISING = 1;
     public static final int STOP_ADVERTISING = 3;
     public static final int INPUT_BUTTON_STATUS = 2;
+    public static final String STICK_X = "stick_x";
+    public static final String STICK_Y = "stick_y";
+    public static final String STICK_RX = "stick_rx";
+    public static final String STICK_RY = "stick_ry";
+    public static final String BUTTON_A = "buttonA";
+    public static final String BUTTON_B = "buttonB";
+    public static final String BUTTON_C = "buttonC";
+    public static final String BUTTON_D = "buttonD";
+    public static final String BUTTON_LB = "buttonLB";
+    public static final String BUTTON_RB = "buttonRB";
+    public static final String BUTTON_BACK = "buttonBACK";
+    public static final String BUTTON_START = "buttonSTART";
+    public static final String HAT_SWITCH = "hat_switch";
+
 
     private NotificationManager notificationManager;
     private GamePadPeripheral mGamePadPeripheral;
@@ -60,15 +74,20 @@ public class GaaMaService extends Service {
     }
 
     private void onChangeButtonStatus(Bundle bundle) {
-        int dx = bundle.getInt("dx", 0);
-        int dy = bundle.getInt("dy", 0);
-        boolean buttonA = bundle.getBoolean("buttonA");
-        boolean buttonB = bundle.getBoolean("buttonB");
-        boolean buttonC = bundle.getBoolean("buttonC");
-        boolean buttonD = bundle.getBoolean("buttonD");
-        boolean buttonE = bundle.getBoolean("buttonE");
-        boolean buttonF = bundle.getBoolean("buttonF");
-        mGamePadPeripheral.onChangeButtonStatus(dx, dy, buttonA, buttonB, buttonC, buttonD, buttonE, buttonF);
+        final int stick_x = bundle.getInt(STICK_X, 0);
+        final int stick_y = bundle.getInt(STICK_Y, 0);
+        final int stick_rx = bundle.getInt(STICK_RX, 0);
+        final int stick_ry = bundle.getInt(STICK_RY, 0);
+        final int hat_switch = bundle.getInt(HAT_SWITCH, 0);
+        final boolean buttonA = bundle.getBoolean(BUTTON_A);
+        final boolean buttonB = bundle.getBoolean(BUTTON_B);
+        final boolean buttonC = bundle.getBoolean(BUTTON_C);
+        final boolean buttonD = bundle.getBoolean(BUTTON_D);
+        final boolean buttonLB = bundle.getBoolean(BUTTON_LB);
+        final boolean buttonRB = bundle.getBoolean(BUTTON_RB);
+        final boolean buttonSTART = bundle.getBoolean(BUTTON_START);
+        final boolean buttonBACK = bundle.getBoolean(BUTTON_BACK);
+        mGamePadPeripheral.onChangeButtonStatus(stick_x, stick_y, stick_rx, stick_ry, hat_switch, buttonA, buttonB, buttonC, buttonD, buttonLB, buttonRB, buttonBACK, buttonSTART);
     }
 
     private void buildNotification() {
