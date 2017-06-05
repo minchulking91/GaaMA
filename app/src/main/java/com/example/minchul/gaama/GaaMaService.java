@@ -16,21 +16,18 @@ public class GaaMaService extends Service {
 
     private static final int NOTIFICATION_ID = 11371;
     private static final String TAG = GaaMaService.class.getSimpleName();
+    public static final String GAA_MA_SERVICE_COMMAND = "GaaMaServiceCommand";
+    public static final int START_ADVERTISING = 1;
+    public static final int STOP_ADVERTISING = 3;
+    public static final int INPUT_BUTTON_STATUS = 2;
 
     private NotificationManager notificationManager;
     private GamePadPeripheral mGamePadPeripheral;
 
-
     @Override
     public void onCreate() {
         Log.d(TAG, "Service Create!");
-
         mGamePadPeripheral = new GamePadPeripheral(this);
-        mGamePadPeripheral.setDeviceName(getString(R.string.ble_joystick));
-        mGamePadPeripheral.setManufacturer("Team 15");
-        mGamePadPeripheral.setSerialNumber("0001");
-
-        buildNotification();
     }
 
     @Override
@@ -43,22 +40,22 @@ public class GaaMaService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        removeBlePeripheralProvider();
-        stopNotification();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d(TAG, "startId : " + startId);
-        //show notification service is running
-        notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext());
-        builder.setContentText(getResources().getText(R.string.service_is_running))
-                .setSmallIcon(android.R.drawable.ic_dialog_info)
-                .setOngoing(true);
-
-        startForeground(NOTIFICATION_ID, builder.build());
+        int command = intent.getIntExtra(GAA_MA_SERVICE_COMMAND, -1);
+        if(command == START_ADVERTISING){
+            setupBlePeripheralProvider();
+            buildNotification();
+        }else if (command == INPUT_BUTTON_STATUS){
+            Bundle bundle = intent.getExtras();
+            assert bundle != null;
+            onChangeButtonStatus(bundle);
+        }else if (command == STOP_ADVERTISING){
+            removeBlePeripheralProvider();
+            stopSelf();
+        }
         return START_STICKY;
     }
 
@@ -75,7 +72,15 @@ public class GaaMaService extends Service {
     }
 
     private void buildNotification() {
+        //show notification service is running
+        notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext());
+        builder.setContentText(getResources().getText(R.string.service_is_running))
+                .setSmallIcon(android.R.drawable.ic_dialog_info)
+                .setOngoing(true);
+
+        startForeground(NOTIFICATION_ID, builder.build());
     }
 
     private void stopNotification() {

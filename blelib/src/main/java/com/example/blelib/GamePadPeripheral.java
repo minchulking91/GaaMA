@@ -6,24 +6,22 @@ public class GamePadPeripheral extends HidPeripheral {
 
     private static final byte[] REPORT_MAP = {
             USAGE_PAGE, 0x01, //UsagePage (Generic Desktop)
-            USAGE, 0x04, //Usage (Game Pad)
+            USAGE, 0x05, //Usage (Game Pad)
             COLLECTION, 0x01, //Collection (Application)
             USAGE, 0x01, //Usage (Pointer)
             COLLECTION, 0x00, //Collection (Physical)
 
             USAGE, 0x30, //Usage (X)
             USAGE, 0x31, //Usage (Y)
-            LOGICAL_MINIMUM, (byte)0xFF, //Logical Minimum (-1)
-            LOGICAL_MAXIMUM, 0x01, //Logical Maximum (1)
             REPORT_COUNT, 0x02, //Report Count (2)
-            REPORT_SIZE, 0x02, //Report Size (2)
+            REPORT_SIZE, 0x08, //Report Size (2)
             INPUT, 0x02, //nput (Data, Variable, Absolute, No Null)
 
             END_COLLECTION, //End Collectionhr
 
-            REPORT_COUNT, 0x04, //Report Count (4)
-            REPORT_SIZE, 0x01, //Report Size (1)
-            INPUT, 0x03, //Input (Constant, Variable, Absolute)
+//            REPORT_COUNT, 0x04, //Report Count (4)
+//            REPORT_SIZE, 0x01, //Report Size (1)
+//            INPUT, 0x03, //Input (Constant, Variable, Absolute)
 
             USAGE_PAGE, 0x09, //Usage Page (Buttons)
             USAGE_MINIMUM, 0x01, //Usage Minimum (Button 1)

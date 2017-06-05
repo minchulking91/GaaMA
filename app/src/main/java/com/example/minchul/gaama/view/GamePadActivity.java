@@ -92,6 +92,7 @@ public class GamePadActivity extends AbstractBLEActivity implements JoystickPad.
     @Override
     protected void startBlePeripheralService() {
         Intent intent = new Intent(this, GaaMaService.class);
+        intent.putExtra(GaaMaService.GAA_MA_SERVICE_COMMAND, GaaMaService.START_ADVERTISING);
         startService(intent);
     }
 
@@ -118,7 +119,9 @@ public class GamePadActivity extends AbstractBLEActivity implements JoystickPad.
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        stopService(new Intent(GamePadActivity.this, GaaMaService.class));
+                        Intent intent = new Intent(GamePadActivity.this, GaaMaService.class);
+                        intent.putExtra(GaaMaService.GAA_MA_SERVICE_COMMAND, GaaMaService.STOP_ADVERTISING);
+                        startService(intent);
                         finish();
                     }
                 });
@@ -174,6 +177,7 @@ public class GamePadActivity extends AbstractBLEActivity implements JoystickPad.
 
     private void onChangeButtonStatus() {
         Intent intent = new Intent(this, GaaMaService.class);
+        intent.putExtra(GaaMaService.GAA_MA_SERVICE_COMMAND, GaaMaService.INPUT_BUTTON_STATUS);
         Bundle bundle = new Bundle();
         bundle.putInt("dx", dx);
         bundle.putInt("dy", dy);
