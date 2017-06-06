@@ -42,6 +42,11 @@ import java.util.TimerTask;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+
+/**
+ * BLE HID over GATT base features
+ *
+ */
 @TargetApi(VERSION_CODES.LOLLIPOP)
 public abstract class HidPeripheral {
     private static final String TAG = HidPeripheral.class.getSimpleName();
@@ -52,20 +57,16 @@ public abstract class HidPeripheral {
     protected static byte INPUT(final int size) {
         return (byte) (0x80 | size);
     }
-
     protected static byte OUTPUT(final int size) {
         return (byte) (0x90 | size);
     }
-
     protected static byte COLLECTION(final int size) {
         return (byte) (0xA0 | size);
     }
-
     protected static byte FEATURE(final int size) {
         return (byte) (0xB0 | size);
     }
-
-    protected static byte END_COLLECTION(final int size) {
+    protected static byte END_COLLECTION() {
         return (byte) (0xC0);
     }
 
@@ -75,39 +76,30 @@ public abstract class HidPeripheral {
     protected static byte USAGE_PAGE(final int size) {
         return (byte) (0x04 | size);
     }
-
     protected static byte LOGICAL_MINIMUM(final int size) {
         return (byte) (0x14 | size);
     }
-
     protected static byte LOGICAL_MAXIMUM(final int size) {
         return (byte) (0x24 | size);
     }
-
     protected static byte PHYSICAL_MINIMUM(final int size) {
         return (byte) (0x34 | size);
     }
-
     protected static byte PHYSICAL_MAXIMUM(final int size) {
         return (byte) (0x44 | size);
     }
-
     protected static byte UNIT_EXPONENT(final int size) {
         return (byte) (0x54 | size);
     }
-
     protected static byte UNIT(final int size) {
         return (byte) (0x64 | size);
     }
-
     protected static byte REPORT_SIZE(final int size) {
         return (byte) (0x74 | size);
     }
-
     protected static byte REPORT_ID(final int size) {
         return (byte) (0x84 | size);
     }
-
     protected static byte REPORT_COUNT(final int size) {
         return (byte) (0x94 | size);
     }
@@ -118,11 +110,9 @@ public abstract class HidPeripheral {
     protected static byte USAGE(final int size) {
         return (byte) (0x08 | size);
     }
-
     protected static byte USAGE_MINIMUM(final int size) {
         return (byte) (0x18 | size);
     }
-
     protected static byte USAGE_MAXIMUM(final int size) {
         return (byte) (0x28 | size);
     }
@@ -130,7 +120,6 @@ public abstract class HidPeripheral {
     protected static byte LSB(final int value) {
         return (byte) (value & 0xff);
     }
-
     protected static byte MSB(final int value) {
         return (byte) (value >> 8 & 0xff);
     }
@@ -139,45 +128,25 @@ public abstract class HidPeripheral {
      * Device Information Service
      */
     private static final UUID SERVICE_DEVICE_INFORMATION = BLEUUIDUtils.fromShortValue(0x180A);
-
     private static final UUID CHARACTERISTIC_MANUFACTURER_NAME = BLEUUIDUtils.fromShortValue(0x2A29);
     private static final UUID CHARACTERISTIC_MODEL_NUMBER = BLEUUIDUtils.fromShortValue(0x2A24);
     private static final UUID CHARACTERISTIC_SERIAL_NUMBER = BLEUUIDUtils.fromShortValue(0x2A25);
-    private static final UUID CHARACTERISTIC_PNP_ID = BLEUUIDUtils.fromShortValue(0x2A50);
     private static final int DEVICE_INFO_MAX_LENGTH = 20;
 
-    private String manufacturer = "a";
-    private String deviceName = "b";
-    private String serialNumber = "c";
-
-    private static byte[] RESPONSE_PNP_ID = {
-            0x02, //vendorIDSource
-            0x01, 0x04, //vendorI 0x0401
-            0x01, 0x00, //productId 0x0001
-            0x01, 0x00 //product Version 0x0001
-
-//            (byte)0x5E, 0x04, //vendorI 045E
-//            (byte)0x19, (byte)0x07, //productId 028E
-//            0x03, 0x01 //product Version 0103
-    };
-/**
- * Xinput
- USB\VID_ 045E &PID_ 028E &REV_0103
- Dinput USB\VID_11C1&PID_9106&REV_0103
- */
-
+    private String manufacturer = "com.example";
+    private String deviceName = "GaaMA";
+    private String serialNumber = "12345678";
 
     /**
      * Battery Service
      */
     private static final UUID SERVICE_BATTERY = BLEUUIDUtils.fromShortValue(0x180F);
-
     private static final UUID CHARACTERISTIC_BATTERY_LEVEL = BLEUUIDUtils.fromShortValue(0x2A19);
+
     /**
      * HID Service
      */
     private static final UUID SERVICE_BLE_HID = BLEUUIDUtils.fromShortValue(0x1812);
-
     private static final UUID CHARACTERISTIC_HID_INFORMATION = BLEUUIDUtils.fromShortValue(0x2A4A);
     private static final UUID CHARACTERISTIC_REPORT_MAP = BLEUUIDUtils.fromShortValue(0x2A4B);
     private static final UUID CHARACTERISTIC_HID_CONTROL_POINT = BLEUUIDUtils.fromShortValue(0x2A4C);
@@ -186,7 +155,6 @@ public abstract class HidPeripheral {
 
     /**
      * Represents Report Map byte array
-     *
      * @return Report Map data
      */
     protected abstract byte[] getReportMap();
@@ -195,7 +163,6 @@ public abstract class HidPeripheral {
      * HID Input Report
      */
     private final Queue<byte[]> inputReportQueue = new ConcurrentLinkedQueue<>();
-
     protected final void addInputReport(final byte[] inputReport) {
         if (inputReport != null && inputReport.length > 0) {
             inputReportQueue.offer(inputReport);
@@ -213,44 +180,38 @@ public abstract class HidPeripheral {
      * Gatt Characteristic Descriptor
      */
     private static final UUID DESCRIPTOR_REPORT_REFERENCE = BLEUUIDUtils.fromShortValue(0x2908);
-
     private static final UUID DESCRIPTOR_CLIENT_CHARACTERISTIC_CONFIGURATION = BLEUUIDUtils.fromShortValue(0x2902);
-    private static final byte[] EMPTY_BYTES = {};
 
-    private static final byte[] RESPONSE_HID_INFORMATION = {
-            0x11, 0x01, //bcdHID
-            0x00, //bCountryCode
-            0x03 //Flags
-    };
+    private static final byte[] EMPTY_BYTES = {};
+    private static final byte[] RESPONSE_HID_INFORMATION = {0x11, 0x01, 0x00, 0x03};
+
     /**
      * Instances for the peripheral
      */
-    private final Context context;
-
+    private final Context applicationContext;
     private final Handler handler;
     private final BluetoothLeAdvertiser bluetoothLeAdvertiser;
     private BluetoothGattCharacteristic inputReportCharacteristic;
     @Nullable
     private BluetoothGattServer gattServer;
     private final Map<String, BluetoothDevice> bluetoothDevicesMap = new HashMap<>();
-    private boolean advertising;
 
     /**
      * Constructor<br />
      * Before constructing the instance, check the Bluetooth availability.
      *
-     * @param context           the ApplicationContext
-     * @param needInputReport   true: serves 'Input Report' BLE characteristic
-     * @param needOutputReport  true: serves 'Output Report' BLE characteristic
+     * @param context the ApplicationContext
+     * @param needInputReport true: serves 'Input Report' BLE characteristic
+     * @param needOutputReport true: serves 'Output Report' BLE characteristic
      * @param needFeatureReport true: serves 'Feature Report' BLE characteristic
-     * @param dataSendingRate   sending rate in milliseconds
+     * @param dataSendingRate sending rate in milliseconds
      * @throws UnsupportedOperationException if starting Bluetooth LE Peripheral failed
      */
     protected HidPeripheral(final Context context, final boolean needInputReport, final boolean needOutputReport, final boolean needFeatureReport, final int dataSendingRate) throws UnsupportedOperationException {
-        this.context = context;
-        handler = new Handler(this.context.getMainLooper());
+        applicationContext = context.getApplicationContext();
+        handler = new Handler(applicationContext.getMainLooper());
 
-        final BluetoothManager bluetoothManager = (BluetoothManager) this.context.getSystemService(Context.BLUETOOTH_SERVICE);
+        final BluetoothManager bluetoothManager = (BluetoothManager) applicationContext.getSystemService(Context.BLUETOOTH_SERVICE);
 
         final BluetoothAdapter bluetoothAdapter = bluetoothManager.getAdapter();
         if (bluetoothAdapter == null) {
@@ -272,7 +233,7 @@ public abstract class HidPeripheral {
             throw new UnsupportedOperationException("Bluetooth LE Advertising not supported on this device.");
         }
 
-        gattServer = bluetoothManager.openGattServer(this.context, gattServerCallback);
+        gattServer = bluetoothManager.openGattServer(applicationContext, gattServerCallback);
         if (gattServer == null) {
             throw new UnsupportedOperationException("gattServer is null, check Bluetooth is ON.");
         }
@@ -321,7 +282,7 @@ public abstract class HidPeripheral {
             try {
                 serviceAdded = gattServer.addService(service);
             } catch (final Exception e) {
-                Log.e(TAG, "Adding Service failed", e);
+                Log.d(TAG, "Adding Service failed", e);
             }
         }
         Log.d(TAG, "Service: " + service.getUuid() + " added.");
@@ -336,20 +297,17 @@ public abstract class HidPeripheral {
         final BluetoothGattService service = new BluetoothGattService(SERVICE_DEVICE_INFORMATION, BluetoothGattService.SERVICE_TYPE_PRIMARY);
         {
             final BluetoothGattCharacteristic characteristic = new BluetoothGattCharacteristic(CHARACTERISTIC_MANUFACTURER_NAME, BluetoothGattCharacteristic.PROPERTY_READ, BluetoothGattCharacteristic.PERMISSION_READ_ENCRYPTED);
-            while (!service.addCharacteristic(characteristic)) ;
+            while (!service.addCharacteristic(characteristic));
         }
         {
             final BluetoothGattCharacteristic characteristic = new BluetoothGattCharacteristic(CHARACTERISTIC_MODEL_NUMBER, BluetoothGattCharacteristic.PROPERTY_READ, BluetoothGattCharacteristic.PERMISSION_READ_ENCRYPTED);
-            while (!service.addCharacteristic(characteristic)) ;
+            while (!service.addCharacteristic(characteristic));
         }
         {
             final BluetoothGattCharacteristic characteristic = new BluetoothGattCharacteristic(CHARACTERISTIC_SERIAL_NUMBER, BluetoothGattCharacteristic.PROPERTY_READ, BluetoothGattCharacteristic.PERMISSION_READ_ENCRYPTED);
             while (!service.addCharacteristic(characteristic)) ;
         }
-//        {
-//            final BluetoothGattCharacteristic characteristic = new BluetoothGattCharacteristic(CHARACTERISTIC_PNP_ID, BluetoothGattCharacteristic.PROPERTY_READ, BluetoothGattCharacteristic.PERMISSION_READ_ENCRYPTED);
-//            while (!service.addCharacteristic(characteristic)) ;
-//        }
+
         return service;
     }
 
@@ -373,7 +331,7 @@ public abstract class HidPeripheral {
         clientCharacteristicConfigurationDescriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
         characteristic.addDescriptor(clientCharacteristicConfigurationDescriptor);
 
-        while (!service.addCharacteristic(characteristic)) ;
+        while (!service.addCharacteristic(characteristic));
 
         return service;
     }
@@ -381,8 +339,8 @@ public abstract class HidPeripheral {
     /**
      * Setup HID Service
      *
-     * @param isNeedInputReport   true: serves 'Input Report' BLE characteristic
-     * @param isNeedOutputReport  true: serves 'Output Report' BLE characteristic
+     * @param isNeedInputReport true: serves 'Input Report' BLE characteristic
+     * @param isNeedOutputReport true: serves 'Output Report' BLE characteristic
      * @param isNeedFeatureReport true: serves 'Feature Report' BLE characteristic
      * @return the service
      */
@@ -396,7 +354,7 @@ public abstract class HidPeripheral {
                     BluetoothGattCharacteristic.PROPERTY_READ,
                     BluetoothGattCharacteristic.PERMISSION_READ_ENCRYPTED);
 
-            while (!service.addCharacteristic(characteristic)) ;
+            while (!service.addCharacteristic(characteristic));
         }
 
         // Report Map
@@ -406,7 +364,7 @@ public abstract class HidPeripheral {
                     BluetoothGattCharacteristic.PROPERTY_READ,
                     BluetoothGattCharacteristic.PERMISSION_READ_ENCRYPTED);
 
-            while (!service.addCharacteristic(characteristic)) ;
+            while (!service.addCharacteristic(characteristic));
         }
 
         // Protocol Mode
@@ -417,7 +375,7 @@ public abstract class HidPeripheral {
                     BluetoothGattCharacteristic.PERMISSION_READ_ENCRYPTED | BluetoothGattCharacteristic.PERMISSION_WRITE_ENCRYPTED);
             characteristic.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE);
 
-            while (!service.addCharacteristic(characteristic)) ;
+            while(!service.addCharacteristic(characteristic));
         }
 
         // HID Control Point
@@ -428,7 +386,7 @@ public abstract class HidPeripheral {
                     BluetoothGattCharacteristic.PERMISSION_WRITE_ENCRYPTED);
             characteristic.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE);
 
-            while (!service.addCharacteristic(characteristic)) ;
+            while (!service.addCharacteristic(characteristic));
         }
 
         // Input Report
@@ -449,7 +407,7 @@ public abstract class HidPeripheral {
                     BluetoothGattDescriptor.PERMISSION_READ_ENCRYPTED | BluetoothGattDescriptor.PERMISSION_WRITE_ENCRYPTED);
             characteristic.addDescriptor(reportReferenceDescriptor);
 
-            while (!service.addCharacteristic(characteristic)) ;
+            while (!service.addCharacteristic(characteristic));
             inputReportCharacteristic = characteristic;
         }
 
@@ -466,7 +424,7 @@ public abstract class HidPeripheral {
                     BluetoothGattDescriptor.PERMISSION_READ_ENCRYPTED | BluetoothGattDescriptor.PERMISSION_WRITE_ENCRYPTED);
             characteristic.addDescriptor(descriptor);
 
-            while (!service.addCharacteristic(characteristic)) ;
+            while (!service.addCharacteristic(characteristic));
         }
 
         // Feature Report
@@ -481,7 +439,7 @@ public abstract class HidPeripheral {
                     BluetoothGattDescriptor.PERMISSION_READ_ENCRYPTED | BluetoothGattDescriptor.PERMISSION_WRITE_ENCRYPTED);
             characteristic.addDescriptor(descriptor);
 
-            while (!service.addCharacteristic(characteristic)) ;
+            while (!service.addCharacteristic(characteristic));
         }
 
         return service;
@@ -490,11 +448,7 @@ public abstract class HidPeripheral {
     /**
      * Starts advertising
      */
-    public final boolean startAdvertising() {
-        if (advertising) {
-            //already advertising
-            return false;
-        }
+    public final void startAdvertising() {
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -526,23 +480,17 @@ public abstract class HidPeripheral {
                 bluetoothLeAdvertiser.startAdvertising(advertiseSettings, advertiseData, scanResult, advertiseCallback);
             }
         });
-        advertising = true;
-        return true;
     }
 
     /**
      * Stops advertising
      */
     public final void stopAdvertising() {
-        if (!advertising) {
-            return;
-        }
         handler.post(new Runnable() {
             @Override
             public void run() {
                 try {
                     bluetoothLeAdvertiser.stopAdvertising(advertiseCallback);
-                    advertising = false;
                 } catch (final IllegalStateException ignored) {
                     // BT Adapter is not turned ON
                 }
@@ -563,18 +511,13 @@ public abstract class HidPeripheral {
         });
     }
 
-
-    private final AdvertiseCallback advertiseCallback = new AdvertiseCallback() {
-        @Override
-        public void onStartSuccess(AdvertiseSettings settingsInEffect) {
-            super.onStartSuccess(settingsInEffect);
-        }
-
-        @Override
-        public void onStartFailure(int errorCode) {
-            Log.e(TAG, "fail advertise with errorCode : " + errorCode);
-        }
-    };
+    /**
+     * Callback for BLE connection<br />
+     * nothing to do.
+     */
+    private final AdvertiseCallback advertiseCallback = new NullAdvertiseCallback();
+    private static class NullAdvertiseCallback extends AdvertiseCallback {
+    }
 
     /**
      * Obtains connected Bluetooth devices
@@ -604,7 +547,7 @@ public abstract class HidPeripheral {
                     // check bond status
                     Log.d(TAG, "BluetoothProfile.STATE_CONNECTED bondState: " + device.getBondState());
                     if (device.getBondState() == BluetoothDevice.BOND_NONE) {
-                        context.registerReceiver(new BroadcastReceiver() {
+                        applicationContext.registerReceiver(new BroadcastReceiver() {
                             @Override
                             public void onReceive(final Context context, final Intent intent) {
                                 final String action = intent.getAction();
@@ -618,6 +561,7 @@ public abstract class HidPeripheral {
 
                                         // successfully bonded
                                         context.unregisterReceiver(this);
+
                                         handler.post(new Runnable() {
                                             @Override
                                             public void run() {
@@ -679,7 +623,6 @@ public abstract class HidPeripheral {
             }
         }
 
-
         @Override
         public void onCharacteristicReadRequest(final BluetoothDevice device, final int requestId, final int offset, final BluetoothGattCharacteristic characteristic) {
             super.onCharacteristicReadRequest(device, requestId, offset, characteristic);
@@ -709,7 +652,7 @@ public abstract class HidPeripheral {
                             }
                         }
                     } else if (BLEUUIDUtils.matches(CHARACTERISTIC_HID_CONTROL_POINT, characteristicUuid)) {
-                        gattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, 0, new byte[]{0});
+                        gattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, 0, new byte []{0});
                     } else if (BLEUUIDUtils.matches(CHARACTERISTIC_REPORT, characteristicUuid)) {
                         gattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, 0, EMPTY_BYTES);
                     } else if (BLEUUIDUtils.matches(CHARACTERISTIC_MANUFACTURER_NAME, characteristicUuid)) {
@@ -718,13 +661,10 @@ public abstract class HidPeripheral {
                         gattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, 0, serialNumber.getBytes(StandardCharsets.UTF_8));
                     } else if (BLEUUIDUtils.matches(CHARACTERISTIC_MODEL_NUMBER, characteristicUuid)) {
                         gattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, 0, deviceName.getBytes(StandardCharsets.UTF_8));
-//                    } else if (BLEUUIDUtils.matches(CHARACTERISTIC_PNP_ID, characteristicUuid)) {
-//                        gattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, 0, RESPONSE_PNP_ID);
                     } else if (BLEUUIDUtils.matches(CHARACTERISTIC_BATTERY_LEVEL, characteristicUuid)) {
-                        gattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, 0, new byte[]{0x64}); // always 100%
+                        gattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, 0, new byte[] {0x64}); // always 100%
                     } else {
                         gattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, 0, characteristic.getValue());
-
                     }
                 }
             });
@@ -744,36 +684,17 @@ public abstract class HidPeripheral {
                 public void run() {
                     if (BLEUUIDUtils.matches(DESCRIPTOR_REPORT_REFERENCE, descriptor.getUuid())) {
                         final int characteristicProperties = descriptor.getCharacteristic().getProperties();
-                        Log.d(TAG, "onDescriptorReadRequest characteristic: " + descriptor.getCharacteristic().getUuid());
-                        if (characteristicProperties ==
-                                (BluetoothGattCharacteristic.PROPERTY_READ |
-                                        BluetoothGattCharacteristic.PROPERTY_WRITE |
-                                        BluetoothGattCharacteristic.PROPERTY_NOTIFY)) {
+                        if (characteristicProperties == (BluetoothGattCharacteristic.PROPERTY_READ | BluetoothGattCharacteristic.PROPERTY_WRITE | BluetoothGattCharacteristic.PROPERTY_NOTIFY)) {
                             // Input Report
                             gattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, 0, new byte[]{0, 1});
-                        } else if (characteristicProperties ==
-                                (BluetoothGattCharacteristic.PROPERTY_READ |
-                                        BluetoothGattCharacteristic.PROPERTY_WRITE |
-                                        BluetoothGattCharacteristic.PROPERTY_WRITE_NO_RESPONSE)) {
+                        } else if (characteristicProperties == (BluetoothGattCharacteristic.PROPERTY_READ | BluetoothGattCharacteristic.PROPERTY_WRITE | BluetoothGattCharacteristic.PROPERTY_WRITE_NO_RESPONSE)) {
                             // Output Report
                             gattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, 0, new byte[]{0, 2});
-                        } else if (characteristicProperties ==
-                                (BluetoothGattCharacteristic.PROPERTY_READ |
-                                        BluetoothGattCharacteristic.PROPERTY_WRITE)) {
+                        } else if (characteristicProperties == (BluetoothGattCharacteristic.PROPERTY_READ | BluetoothGattCharacteristic.PROPERTY_WRITE)) {
                             // Feature Report
                             gattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, 0, new byte[]{0, 3});
                         } else {
                             gattServer.sendResponse(device, requestId, BluetoothGatt.GATT_FAILURE, 0, EMPTY_BYTES);
-                        }
-                    } else if (BLEUUIDUtils.matches(DESCRIPTOR_CLIENT_CHARACTERISTIC_CONFIGURATION, descriptor.getUuid())) {
-                        final int characteristicProperties = descriptor.getCharacteristic().getProperties();
-                        final UUID characteristicUuid = descriptor.getCharacteristic().getUuid();
-                        Log.d(TAG, "onDescriptorReadRequest characteristic: " + characteristicUuid);
-                        if (BLEUUIDUtils.matches(CHARACTERISTIC_REPORT, characteristicUuid)) {
-
-                        } else {
-
-                            gattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, 0, new byte[]{0, 0});
                         }
                     }
                 }
@@ -832,7 +753,6 @@ public abstract class HidPeripheral {
             }
         }
     };
-
 
     /**
      * Set the manufacturer name

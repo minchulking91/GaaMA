@@ -9,6 +9,7 @@ import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import com.example.blelib.GamePadHelper;
 import com.example.blelib.GamePadPeripheral;
 
 
@@ -38,38 +39,39 @@ public class GaaMaService extends Service {
 
 
     private NotificationManager notificationManager;
-    private GamePadPeripheral mGamePadPeripheral;
+    private GamePadHelper gamePadHelper;
 
     @Override
     public void onCreate() {
         Log.d(TAG, "Service Create!");
-        mGamePadPeripheral = new GamePadPeripheral(this);
+        gamePadHelper = GamePadHelper.getInstance();
     }
 
     @Override
     public void onTaskRemoved(Intent rootIntent) {
         super.onTaskRemoved(rootIntent);
-        removeBlePeripheralProvider();
+        gamePadHelper.stopAdvertising();
         stopNotification();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        gamePadHelper.stopAdvertising();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         int command = intent.getIntExtra(GAA_MA_SERVICE_COMMAND, -1);
         if(command == START_ADVERTISING){
-            setupBlePeripheralProvider();
+            gamePadHelper.startAdvertising();
             buildNotification();
         }else if (command == INPUT_BUTTON_STATUS){
             Bundle bundle = intent.getExtras();
             assert bundle != null;
             onChangeButtonStatus(bundle);
         }else if (command == STOP_ADVERTISING){
-            removeBlePeripheralProvider();
+            gamePadHelper.stopAdvertising();
             stopSelf();
         }
         return START_STICKY;
@@ -91,7 +93,7 @@ public class GaaMaService extends Service {
         final boolean buttonRT = bundle.getBoolean(BUTTON_RT);
         final boolean buttonSTART = bundle.getBoolean(BUTTON_START);
         final boolean buttonBACK = bundle.getBoolean(BUTTON_BACK);
-        mGamePadPeripheral.onChangeButtonStatus(stick_x, stick_y, stick_rx, stick_ry, hat_switch, buttonA, buttonB, buttonX, buttonY, buttonLB, buttonRB, buttonLT, buttonRT, buttonBACK, buttonSTART);
+        gamePadHelper.onChangeButtonStatus(stick_x, stick_y, stick_rx, stick_ry, hat_switch, buttonA, buttonB, buttonX, buttonY, buttonLB, buttonRB, buttonLT, buttonRT, buttonBACK, buttonSTART);
     }
 
     private void buildNotification() {
@@ -110,17 +112,8 @@ public class GaaMaService extends Service {
         notificationManager.cancel(NOTIFICATION_ID);
     }
 
-    boolean setupBlePeripheralProvider() {
-        return mGamePadPeripheral.startAdvertising();
-    }
-
-    void removeBlePeripheralProvider() {
-        mGamePadPeripheral.stopAdvertising();
-    }
-
     @Override
     public IBinder onBind(Intent intent) {
-        // TODO: Return the communication channel to the service.
         return null;
     }
 
