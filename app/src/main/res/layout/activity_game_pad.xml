@@ -15,16 +15,22 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/btn_fullscreen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="full screen" />
+
             <com.example.minchul.gaama.widget.JoystickPad
                 android:id="@+id/left_stick"
                 android:layout_width="@dimen/joystick_size"
                 android:layout_height="@dimen/joystick_size"
 
-                android:layout_alignParentTop="true"
                 android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
 
-                android:layout_marginTop="@dimen/margin_component_bottom"
-                android:layout_marginLeft="@dimen/margin_component_bottom"
+                android:layout_marginLeft="60dp"
                 android:background="@drawable/shape_joystick_bg">
 
                 <Button
@@ -33,6 +39,7 @@
                     android:background="@drawable/shape_joystick_dot" />
 
             </com.example.minchul.gaama.widget.JoystickPad>
+
             <com.example.minchul.gaama.widget.JoystickPad
                 android:id="@+id/direction_pad"
                 android:layout_width="@dimen/joystick_size"
@@ -42,7 +49,7 @@
                 android:layout_alignParentLeft="true"
 
                 android:layout_marginBottom="@dimen/margin_component_bottom"
-                android:layout_marginLeft="120dp"
+                android:layout_marginLeft="160dp"
                 android:background="@drawable/shape_joystick_bg">
 
                 <Button
@@ -51,6 +58,7 @@
                     android:background="@drawable/shape_joystick_dot" />
 
             </com.example.minchul.gaama.widget.JoystickPad>
+
             <com.example.minchul.gaama.widget.JoystickPad
                 android:id="@+id/right_stick"
                 android:layout_width="@dimen/joystick_size"
@@ -60,7 +68,7 @@
                 android:layout_alignParentRight="true"
 
                 android:layout_marginBottom="@dimen/margin_component_bottom"
-                android:layout_marginRight="150dp"
+                android:layout_marginRight="160dp"
                 android:background="@drawable/shape_joystick_bg">
 
                 <Button
@@ -69,14 +77,14 @@
                     android:background="@drawable/shape_joystick_dot" />
 
             </com.example.minchul.gaama.widget.JoystickPad>
+
             <FrameLayout
                 android:layout_width="@dimen/button_group_size"
                 android:layout_height="@dimen/button_group_size"
 
-                android:layout_alignParentTop="true"
                 android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
 
-                android:layout_marginTop="@dimen/margin_component_bottom"
                 android:layout_marginRight="@dimen/margin_component_side">
 
                 <com.example.minchul.gaama.widget.GameDotButton
@@ -84,7 +92,7 @@
                     android:layout_width="@dimen/button_size"
                     android:layout_height="@dimen/button_size"
                     android:layout_gravity="bottom|center_horizontal"
-                    android:src = "@android:color/transparent"
+                    android:src="@android:color/transparent"
                     android:text="@string/game_pad_a" />
 
                 <com.example.minchul.gaama.widget.GameDotButton
@@ -92,7 +100,7 @@
                     android:layout_width="@dimen/button_size"
                     android:layout_height="@dimen/button_size"
                     android:layout_gravity="right|center_vertical"
-                    android:src = "@android:color/transparent"
+                    android:src="@android:color/transparent"
                     android:text="@string/game_pad_b" />
 
                 <com.example.minchul.gaama.widget.GameDotButton
@@ -100,7 +108,7 @@
                     android:layout_width="@dimen/button_size"
                     android:layout_height="@dimen/button_size"
                     android:layout_gravity="left|center_vertical"
-                    android:src = "@android:color/transparent"
+                    android:src="@android:color/transparent"
                     android:text="@string/game_pad_x" />
 
                 <com.example.minchul.gaama.widget.GameDotButton
@@ -108,57 +116,68 @@
                     android:layout_width="@dimen/button_size"
                     android:layout_height="@dimen/button_size"
                     android:layout_gravity="top|center_horizontal"
-                    android:src = "@android:color/transparent"
+                    android:src="@android:color/transparent"
                     android:text="@string/game_pad_y" />
             </FrameLayout>
+
             <com.example.minchul.gaama.widget.GameButton
-                android:layout_marginTop="30dp"
-                android:layout_centerHorizontal="true"
-                android:layout_alignParentTop="true"
                 android:id="@+id/btn_back"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="back"/>
-            <com.example.minchul.gaama.widget.GameButton
-                android:layout_marginTop="80dp"
-                android:layout_centerHorizontal="true"
                 android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="30dp"
+                android:text="back" />
+
+            <com.example.minchul.gaama.widget.GameButton
                 android:id="@+id/btn_start"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="start"/>
-            <com.example.minchul.gaama.widget.GameButton
-                android:layout_marginTop="20dp"
-                android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
-                android:id="@+id/btn_lt"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="80dp"
+                android:text="start" />
+
+            <android.support.v7.widget.LinearLayoutCompat
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="LT"/>
-            <com.example.minchul.gaama.widget.GameButton
-                android:layout_marginTop="60dp"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:id="@+id/btn_lb"
+                android:layout_margin="30dp"
+                android:orientation="horizontal">
+
+                <com.example.minchul.gaama.widget.GameButton
+                    android:id="@+id/btn_lt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="LT" />
+
+                <com.example.minchul.gaama.widget.GameButton
+                    android:id="@+id/btn_lb"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="LB" />
+            </android.support.v7.widget.LinearLayoutCompat>
+
+            <android.support.v7.widget.LinearLayoutCompat
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="LB"/>
-            <com.example.minchul.gaama.widget.GameButton
-                android:layout_marginTop="20dp"
                 android:layout_alignParentRight="true"
-                android:layout_alignParentTop="true"
-                android:id="@+id/btn_rt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="RT"/>
-            <com.example.minchul.gaama.widget.GameButton
-                android:layout_marginTop="60dp"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentTop="true"
-                android:id="@+id/btn_rb"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="RB"/>
+                android:layout_margin="30dp"
+                android:orientation="horizontal">
+
+                <com.example.minchul.gaama.widget.GameButton
+                    android:id="@+id/btn_rb"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="RB" />
+
+                <com.example.minchul.gaama.widget.GameButton
+                    android:id="@+id/btn_rt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="RT" />
+
+
+            </android.support.v7.widget.LinearLayoutCompat>
         </RelativeLayout>
     </FrameLayout>
 
