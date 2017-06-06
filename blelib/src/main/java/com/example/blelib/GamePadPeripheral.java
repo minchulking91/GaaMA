@@ -69,13 +69,13 @@ public class GamePadPeripheral extends HidPeripheral {
             direction = 15;
         } else {
             int abs_hat_switch = Math.abs(hat_switch);
-            if (abs_hat_switch < 23) {
+            if (abs_hat_switch < 30) {
                 direction = 2;
-            } else if (abs_hat_switch < 68) {
+            } else if (abs_hat_switch < 60) {
                 direction = (byte) (hat_switch > 0 ? 1 : 3);
-            } else if (abs_hat_switch < 113) {
+            } else if (abs_hat_switch < 120) {
                 direction = (byte) (hat_switch > 0 ? 0 : 4);
-            } else if (abs_hat_switch < 158) {
+            } else if (abs_hat_switch < 150) {
                 direction = (byte) (hat_switch > 0 ? 7 : 5);
             } else {
                 direction = 6;
