@@ -5,8 +5,8 @@
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="game_pad_a">A</string>
     <string name="game_pad_b">B</string>
-    <string name="game_pad_c">C</string>
-    <string name="game_pad_d">D</string>
+    <string name="game_pad_x">X</string>
+    <string name="game_pad_y">Y</string>
 
     <string name="requires_bl_enabled">This app requires bluetooth enabled.</string>
     <string name="ble_perip_not_supported">Bluetooth LE Peripheral is not supported on this device. The app will exit.</string>

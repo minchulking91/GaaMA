@@ -26,13 +26,15 @@ public class GaaMaService extends Service {
     public static final String STICK_RY = "stick_ry";
     public static final String BUTTON_A = "buttonA";
     public static final String BUTTON_B = "buttonB";
-    public static final String BUTTON_C = "buttonC";
-    public static final String BUTTON_D = "buttonD";
+    public static final String BUTTON_X = "buttonX";
+    public static final String BUTTON_Y = "buttonY";
     public static final String BUTTON_LB = "buttonLB";
     public static final String BUTTON_RB = "buttonRB";
     public static final String BUTTON_BACK = "buttonBACK";
     public static final String BUTTON_START = "buttonSTART";
     public static final String HAT_SWITCH = "hat_switch";
+    public static final String BUTTON_LT = "button_lt";
+    public static final String BUTTON_RT = "button_rt";
 
 
     private NotificationManager notificationManager;
@@ -81,13 +83,15 @@ public class GaaMaService extends Service {
         final int hat_switch = bundle.getInt(HAT_SWITCH, 0);
         final boolean buttonA = bundle.getBoolean(BUTTON_A);
         final boolean buttonB = bundle.getBoolean(BUTTON_B);
-        final boolean buttonC = bundle.getBoolean(BUTTON_C);
-        final boolean buttonD = bundle.getBoolean(BUTTON_D);
+        final boolean buttonX = bundle.getBoolean(BUTTON_X);
+        final boolean buttonY = bundle.getBoolean(BUTTON_Y);
         final boolean buttonLB = bundle.getBoolean(BUTTON_LB);
         final boolean buttonRB = bundle.getBoolean(BUTTON_RB);
+        final boolean buttonLT = bundle.getBoolean(BUTTON_LT);
+        final boolean buttonRT = bundle.getBoolean(BUTTON_RT);
         final boolean buttonSTART = bundle.getBoolean(BUTTON_START);
         final boolean buttonBACK = bundle.getBoolean(BUTTON_BACK);
-        mGamePadPeripheral.onChangeButtonStatus(stick_x, stick_y, stick_rx, stick_ry, hat_switch, buttonA, buttonB, buttonC, buttonD, buttonLB, buttonRB, buttonBACK, buttonSTART);
+        mGamePadPeripheral.onChangeButtonStatus(stick_x, stick_y, stick_rx, stick_ry, hat_switch, buttonY, buttonB, buttonA, buttonX, buttonLB, buttonRB, buttonLT, buttonRT, buttonBACK, buttonSTART);
     }
 
     private void buildNotification() {

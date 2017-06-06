@@ -7,27 +7,30 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.View;
 
 import com.example.minchul.gaama.GaaMaService;
+import com.example.minchul.gaama.GameButtonListener;
 import com.example.minchul.gaama.R;
 import com.example.minchul.gaama.widget.GameButton;
+import com.example.minchul.gaama.widget.GameDotButton;
 import com.example.minchul.gaama.widget.JoystickPad;
 
-public class GamePadActivity extends AbstractBLEActivity implements JoystickPad.JoyStickActionListener, GameButton.GameButtonListener {
+public class GamePadActivity extends AbstractBLEActivity implements JoystickPad.JoyStickActionListener, GameButtonListener {
 
     //VIEW
     private View mContentView;
     private JoystickPad mLeftStick;
     private JoystickPad mRightStick;
     private JoystickPad mHatSwitch;
-    private GameButton mGameButtonA;
-    private GameButton mGameButtonB;
-    private GameButton mGameButtonC;
-    private GameButton mGameButtonD;
+    private GameDotButton mGameButtonA;
+    private GameDotButton mGameButtonB;
+    private GameDotButton mGameButtonX;
+    private GameDotButton mGameButtonY;
     private GameButton mGameButtonLB;
     private GameButton mGameButtonRB;
+    private GameButton mGameButtonLT;
+    private GameButton mGameButtonRT;
     private GameButton mGameButtonBack;
     private GameButton mGameButtonStart;
 
@@ -69,13 +72,15 @@ public class GamePadActivity extends AbstractBLEActivity implements JoystickPad.
     private int stick_y = 0;
     private int stick_rx = 0;
     private int stick_ry = 0;
-    private int hatswitch = 0;
+    private int hat_switch = 0;
     private boolean buttonA = false;
     private boolean buttonB = false;
-    private boolean buttonC = false;
-    private boolean buttonD = false;
+    private boolean buttonX = false;
+    private boolean buttonY = false;
     private boolean buttonLB = false;
     private boolean buttonRB = false;
+    private boolean buttonLT = false;
+    private boolean buttonRT = false;
     private boolean buttonBack = false;
     private boolean buttonStart = false;
 
@@ -94,18 +99,26 @@ public class GamePadActivity extends AbstractBLEActivity implements JoystickPad.
         mRightStick.setJoyStickActionListener(this);
         mLeftStick.setJoyStickActionListener(this);
         mHatSwitch.setJoyStickActionListener(this);
-        mGameButtonA = (GameButton) findViewById(R.id.game_button_a);
-        mGameButtonB = (GameButton) findViewById(R.id.game_button_b);
-        mGameButtonC = (GameButton) findViewById(R.id.game_button_c);
-        mGameButtonD = (GameButton) findViewById(R.id.game_button_d);
+        mGameButtonA = (GameDotButton) findViewById(R.id.btn_a);
+        mGameButtonB = (GameDotButton) findViewById(R.id.btn_b);
+        mGameButtonX = (GameDotButton) findViewById(R.id.btn_x);
+        mGameButtonY = (GameDotButton) findViewById(R.id.btn_y);
+        mGameButtonLB = (GameButton) findViewById(R.id.btn_lb);
+        mGameButtonLT = (GameButton) findViewById(R.id.btn_lt);
+        mGameButtonRB = (GameButton) findViewById(R.id.btn_rb);
+        mGameButtonRT = (GameButton) findViewById(R.id.btn_rt);
         mGameButtonBack = (GameButton) findViewById(R.id.btn_back);
         mGameButtonStart = (GameButton) findViewById(R.id.btn_start);
         mGameButtonA.setGameButtonListener(this);
         mGameButtonB.setGameButtonListener(this);
-        mGameButtonC.setGameButtonListener(this);
-        mGameButtonD.setGameButtonListener(this);
+        mGameButtonX.setGameButtonListener(this);
+        mGameButtonY.setGameButtonListener(this);
         mGameButtonBack.setGameButtonListener(this);
         mGameButtonStart.setGameButtonListener(this);
+        mGameButtonLB.setGameButtonListener(this);
+        mGameButtonLT.setGameButtonListener(this);
+        mGameButtonRB.setGameButtonListener(this);
+        mGameButtonRT.setGameButtonListener(this);
     }
 
 
@@ -192,11 +205,11 @@ public class GamePadActivity extends AbstractBLEActivity implements JoystickPad.
         if (v == mLeftStick) {
             stick_x = 0;
             stick_y = 0;
-        }else if(v == mRightStick){
+        } else if (v == mRightStick) {
             stick_rx = 0;
             stick_ry = 0;
-        }else if(v == mHatSwitch){
-            hatswitch = Integer.MAX_VALUE;
+        } else if (v == mHatSwitch) {
+            hat_switch = Integer.MAX_VALUE;
         }
         onChangeButtonStatus();
 
@@ -210,11 +223,15 @@ public class GamePadActivity extends AbstractBLEActivity implements JoystickPad.
         bundle.putInt(GaaMaService.STICK_Y, stick_y);
         bundle.putInt(GaaMaService.STICK_RX, stick_rx);
         bundle.putInt(GaaMaService.STICK_RY, stick_ry);
-        bundle.putInt(GaaMaService.HAT_SWITCH, hatswitch);
+        bundle.putInt(GaaMaService.HAT_SWITCH, hat_switch);
         bundle.putBoolean(GaaMaService.BUTTON_A, buttonA);
         bundle.putBoolean(GaaMaService.BUTTON_B, buttonB);
-        bundle.putBoolean(GaaMaService.BUTTON_C, buttonC);
-        bundle.putBoolean(GaaMaService.BUTTON_D, buttonD);
+        bundle.putBoolean(GaaMaService.BUTTON_X, buttonX);
+        bundle.putBoolean(GaaMaService.BUTTON_Y, buttonY);
+        bundle.putBoolean(GaaMaService.BUTTON_LB, buttonLB);
+        bundle.putBoolean(GaaMaService.BUTTON_RB, buttonRB);
+        bundle.putBoolean(GaaMaService.BUTTON_LT, buttonLT);
+        bundle.putBoolean(GaaMaService.BUTTON_RT, buttonRT);
         bundle.putBoolean(GaaMaService.BUTTON_BACK, buttonBack);
         bundle.putBoolean(GaaMaService.BUTTON_START, buttonStart);
 
@@ -224,14 +241,14 @@ public class GamePadActivity extends AbstractBLEActivity implements JoystickPad.
 
     @Override
     public void onStickMove(JoystickPad v, int x, int y, float degrees) {
-        if(v == mLeftStick) {
+        if (v == mLeftStick) {
             this.stick_x = x;
             this.stick_y = y;
-        }else if(v == mRightStick){
+        } else if (v == mRightStick) {
             this.stick_rx = x;
             this.stick_ry = y;
-        }else if(v == mHatSwitch){
-            hatswitch = (int) degrees;
+        } else if (v == mHatSwitch) {
+            hat_switch = (int) degrees;
         }
         onChangeButtonStatus();
     }
@@ -243,15 +260,24 @@ public class GamePadActivity extends AbstractBLEActivity implements JoystickPad.
             this.buttonA = pressed;
         } else if (view == mGameButtonB) {
             this.buttonB = pressed;
-        } else if (view == mGameButtonC) {
-            this.buttonC = pressed;
-        } else if (view == mGameButtonD) {
-            this.buttonD = pressed;
-        }else if (view == mGameButtonBack){
+        } else if (view == mGameButtonX) {
+            this.buttonX = pressed;
+        } else if (view == mGameButtonY) {
+            this.buttonY = pressed;
+        } else if (view == mGameButtonBack) {
             this.buttonBack = pressed;
-        }else if(view == mGameButtonStart){
+        } else if (view == mGameButtonStart) {
             this.buttonStart = pressed;
+        } else if (view == mGameButtonLB) {
+            this.buttonLB = pressed;
+        } else if (view == mGameButtonLT) {
+            this.buttonLT = pressed;
+        } else if (view == mGameButtonRB) {
+            this.buttonRB = pressed;
+        } else if (view == mGameButtonRT) {
+            this.buttonRT = pressed;
         }
+
         onChangeButtonStatus();
     }
 

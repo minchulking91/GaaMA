@@ -2,30 +2,29 @@ package com.example.minchul.gaama.widget;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.AppCompatButton;
+import android.support.design.widget.FloatingActionButton;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.View;
 
 import com.example.minchul.gaama.GameButtonListener;
 
 /**
- * Created by minchul on 2017-05-22.
+ * Created by minchul on 2017-06-06.
  */
 
-public class GameButton extends AppCompatButton {
+public class GameDotButton extends FloatingActionButton implements GameButtonListener {
     private GameButtonListener mGameButtonListener;
 
-
-
-    public GameButton(Context context) {
+    public GameDotButton(Context context) {
         super(context);
     }
 
-    public GameButton(Context context, AttributeSet attrs) {
+    public GameDotButton(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public GameButton(Context context, AttributeSet attrs, int defStyleAttr) {
+    public GameDotButton(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
@@ -63,4 +62,8 @@ public class GameButton extends AppCompatButton {
         this.mGameButtonListener = listener;
     }
 
+    @Override
+    public void onChangeButtonPressed(View view, boolean pressed) {
+
+    }
 }
