@@ -91,7 +91,7 @@ public class GaaMaService extends Service {
         final boolean buttonRT = bundle.getBoolean(BUTTON_RT);
         final boolean buttonSTART = bundle.getBoolean(BUTTON_START);
         final boolean buttonBACK = bundle.getBoolean(BUTTON_BACK);
-        mGamePadPeripheral.onChangeButtonStatus(stick_x, stick_y, stick_rx, stick_ry, hat_switch, buttonY, buttonB, buttonA, buttonX, buttonLB, buttonRB, buttonLT, buttonRT, buttonBACK, buttonSTART);
+        mGamePadPeripheral.onChangeButtonStatus(stick_x, stick_y, stick_rx, stick_ry, hat_switch, buttonA, buttonB, buttonX, buttonY, buttonLB, buttonRB, buttonLT, buttonRT, buttonBACK, buttonSTART);
     }
 
     private void buildNotification() {
