@@ -26,6 +26,7 @@ import android.os.ParcelUuid;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.blelib.util.BLEUUIDUtils;
 
@@ -730,9 +731,19 @@ public abstract class HidPeripheral {
         public void onDescriptorWriteRequest(final BluetoothDevice device, final int requestId, final BluetoothGattDescriptor descriptor, final boolean preparedWrite, final boolean responseNeeded, final int offset, final byte[] value) {
             super.onDescriptorWriteRequest(device, requestId, descriptor, preparedWrite, responseNeeded, offset, value);
             Log.d(TAG, "onDescriptorWriteRequest descriptor: " + descriptor.getUuid() + ", value: " + Arrays.toString(value) + ", responseNeeded: " + responseNeeded + ", preparedWrite: " + preparedWrite);
-
+            Log.d(TAG, "descriptor characteristic: " + descriptor.getCharacteristic().getUuid());
             descriptor.setValue(value);
 
+            if(BLEUUIDUtils.matches(DESCRIPTOR_CLIENT_CHARACTERISTIC_CONFIGURATION, descriptor.getUuid()) && BLEUUIDUtils.matches(CHARACTERISTIC_REPORT, descriptor.getCharacteristic().getUuid())){
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText (applicationContext, "device is ready!", Toast.LENGTH_LONG).show();
+                    }
+                });
+
+
+            }
             if (responseNeeded) {
                 if (BLEUUIDUtils.matches(DESCRIPTOR_CLIENT_CHARACTERISTIC_CONFIGURATION, descriptor.getUuid())) {
                     // send empty

@@ -147,7 +147,7 @@ public class GamePadActivity extends AbstractBLEActivity implements JoystickPad.
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
 
-        delayedHide(100);
+//        delayedHide(100);
     }
 
     @Override
