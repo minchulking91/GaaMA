@@ -5,8 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatButton;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-
-import com.example.minchul.gaama.GameButtonListener;
+import android.view.View;
 
 /**
  * Created by minchul on 2017-05-22.
@@ -63,4 +62,10 @@ public class GameButton extends AppCompatButton {
         this.mGameButtonListener = listener;
     }
 
+    /**
+     * Created by minchul on 2017-06-06.
+     */
+    public static interface GameButtonListener {
+        void onChangeButtonPressed(View view, boolean pressed);
+    }
 }

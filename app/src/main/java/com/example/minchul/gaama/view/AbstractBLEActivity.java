@@ -7,7 +7,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
-import com.example.blelib.util.BLEUtils;
+import com.example.minchul.gaama.utils.BLEUtils;
 import com.example.minchul.gaama.R;
 
 /**

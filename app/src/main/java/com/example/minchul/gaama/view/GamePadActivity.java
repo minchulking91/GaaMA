@@ -11,15 +11,14 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatButton;
 import android.view.View;
 
-import com.example.minchul.gaama.GaaMaService;
-import com.example.minchul.gaama.GameButtonListener;
+import com.example.minchul.gaama.service.GaaMaService;
 import com.example.minchul.gaama.R;
 import com.example.minchul.gaama.utils.Text2Bitmap;
 import com.example.minchul.gaama.widget.GameButton;
 import com.example.minchul.gaama.widget.GameDotButton;
 import com.example.minchul.gaama.widget.JoystickPad;
 
-public class GamePadActivity extends AbstractBLEActivity implements JoystickPad.JoyStickActionListener, GameButtonListener {
+public class GamePadActivity extends AbstractBLEActivity implements JoystickPad.JoyStickActionListener, GameButton.GameButtonListener {
 
     //VIEW
     private View mContentView;
@@ -139,7 +138,7 @@ public class GamePadActivity extends AbstractBLEActivity implements JoystickPad.
     @Override
     protected void startBlePeripheralService() {
         Intent intent = new Intent(this, GaaMaService.class);
-        intent.putExtra(GaaMaService.GAA_MA_SERVICE_COMMAND, GaaMaService.START_ADVERTISING);
+        intent.putExtra(GaaMaService.SERVICE_COMMAND, GaaMaService.START_ADVERTISING);
         startService(intent);
     }
 
@@ -167,7 +166,7 @@ public class GamePadActivity extends AbstractBLEActivity implements JoystickPad.
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Intent intent = new Intent(GamePadActivity.this, GaaMaService.class);
-                        intent.putExtra(GaaMaService.GAA_MA_SERVICE_COMMAND, GaaMaService.STOP_ADVERTISING);
+                        intent.putExtra(GaaMaService.SERVICE_COMMAND, GaaMaService.STOP_ADVERTISING);
                         startService(intent);
                         finish();
                     }
@@ -231,7 +230,7 @@ public class GamePadActivity extends AbstractBLEActivity implements JoystickPad.
 
     private void onChangeButtonStatus() {
         Intent intent = new Intent(this, GaaMaService.class);
-        intent.putExtra(GaaMaService.GAA_MA_SERVICE_COMMAND, GaaMaService.INPUT_BUTTON_STATUS);
+        intent.putExtra(GaaMaService.SERVICE_COMMAND, GaaMaService.INPUT_BUTTON_STATUS);
         Bundle bundle = new Bundle();
         bundle.putInt(GaaMaService.STICK_X, leftStickX);
         bundle.putInt(GaaMaService.STICK_Y, leftStickY);

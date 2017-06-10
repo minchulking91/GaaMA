@@ -7,14 +7,12 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.example.minchul.gaama.GameButtonListener;
-
 /**
  * Created by minchul on 2017-06-06.
  */
 
-public class GameDotButton extends FloatingActionButton implements GameButtonListener {
-    private GameButtonListener mGameButtonListener;
+public class GameDotButton extends FloatingActionButton implements GameButton.GameButtonListener {
+    private GameButton.GameButtonListener mGameButtonListener;
 
     public GameDotButton(Context context) {
         super(context);
@@ -58,7 +56,7 @@ public class GameDotButton extends FloatingActionButton implements GameButtonLis
         super.setOnTouchListener(l);
     }
 
-    public void setGameButtonListener(GameButtonListener listener){
+    public void setGameButtonListener(GameButton.GameButtonListener listener){
         this.mGameButtonListener = listener;
     }
 

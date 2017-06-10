@@ -3,7 +3,7 @@ package com.example.minchul.gaama;
 import android.app.Application;
 import android.util.Log;
 
-import com.example.blelib.GamePadHelper;
+import com.example.minchul.gaama.ble.GamePadHelper;
 
 /**
  * Created by minchul on 2017-05-22.

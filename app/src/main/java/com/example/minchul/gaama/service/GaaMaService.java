@@ -1,26 +1,17 @@
-package com.example.minchul.gaama;
+package com.example.minchul.gaama.service;
 
-import android.app.NotificationManager;
-import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import com.example.blelib.GamePadHelper;
-import com.example.blelib.GamePadPeripheral;
+import com.example.minchul.gaama.ble.GamePadHelper;
 
 
-public class GaaMaService extends Service {
+public class GaaMaService extends BaseHIDService {
 
-    private static final int NOTIFICATION_ID = 11371;
+
     private static final String TAG = GaaMaService.class.getSimpleName();
-    public static final String GAA_MA_SERVICE_COMMAND = "GaaMaServiceCommand";
-    public static final int START_ADVERTISING = 1;
-    public static final int STOP_ADVERTISING = 3;
-    public static final int INPUT_BUTTON_STATUS = 2;
+
     public static final String STICK_X = "stick_x";
     public static final String STICK_Y = "stick_y";
     public static final String STICK_RX = "stick_rx";
@@ -38,7 +29,6 @@ public class GaaMaService extends Service {
     public static final String BUTTON_RT = "button_rt";
 
 
-    private NotificationManager notificationManager;
     private GamePadHelper gamePadHelper;
 
     @Override
@@ -60,24 +50,15 @@ public class GaaMaService extends Service {
         gamePadHelper.stopAdvertising();
     }
 
+
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        int command = intent.getIntExtra(GAA_MA_SERVICE_COMMAND, -1);
-        if(command == START_ADVERTISING){
-            gamePadHelper.startAdvertising();
-            buildNotification();
-        }else if (command == INPUT_BUTTON_STATUS){
-            Bundle bundle = intent.getExtras();
-            assert bundle != null;
-            onChangeButtonStatus(bundle);
-        }else if (command == STOP_ADVERTISING){
-            gamePadHelper.stopAdvertising();
-            stopSelf();
-        }
-        return START_STICKY;
+    protected void onStopAdvertising() {
+        gamePadHelper.stopAdvertising();
+        stopSelf();
     }
 
-    private void onChangeButtonStatus(Bundle bundle) {
+    @Override
+    protected void onChangeButtonStatus(Bundle bundle) {
         final int stick_x = bundle.getInt(STICK_X, 0);
         final int stick_y = bundle.getInt(STICK_Y, 0);
         final int stick_rx = bundle.getInt(STICK_RX, 0);
@@ -96,25 +77,10 @@ public class GaaMaService extends Service {
         gamePadHelper.onChangeButtonStatus(stick_x, stick_y, stick_rx, stick_ry, hat_switch, buttonA, buttonB, buttonX, buttonY, buttonLB, buttonRB, buttonLT, buttonRT, buttonBACK, buttonSTART);
     }
 
-    private void buildNotification() {
-        //show notification service is running
-        notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext());
-        builder.setContentText(getResources().getText(R.string.service_is_running))
-                .setSmallIcon(android.R.drawable.ic_dialog_info)
-                .setOngoing(true);
-
-        startForeground(NOTIFICATION_ID, builder.build());
-    }
-
-    private void stopNotification() {
-        notificationManager.cancel(NOTIFICATION_ID);
-    }
-
     @Override
-    public IBinder onBind(Intent intent) {
-        return null;
+    protected void onStartAdvertising() {
+        gamePadHelper.startAdvertising();
+        buildNotification();
     }
 
 
