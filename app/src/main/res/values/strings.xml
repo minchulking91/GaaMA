@@ -16,4 +16,9 @@
     <string name="service_is_running">서비스가 실행중 입니다.</string>
     <string name="title_exit">종료</string>
     <string name="message_exit">종료하시겠습니까?</string>
+    <string-array name="device_list">
+        <item>Game Pad</item>
+        <item>Keyboard</item>
+        <item>Mouse</item>
+    </string-array>
 </resources>

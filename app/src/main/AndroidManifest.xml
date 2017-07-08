@@ -9,6 +9,7 @@
         android:name="android.hardware.bluetooth_le"
         android:required="true" />
 
+    <uses-permission android:name="android.permission.BLUETOOTH_PRIVILEGED" />
     <application
         android:name=".GMAApp"
         android:allowBackup="true"
@@ -22,19 +23,22 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:screenOrientation="landscape"
-            android:theme="@style/FullscreenTheme">
+            android:theme="@style/FullscreenTheme"></activity>
+
+        <service
+            android:name=".service.GaaMaService"
+            android:enabled="true"
+            android:exported="false"
+            android:stopWithTask="false" />
+
+        <activity android:name=".view.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <service
-            android:name=".service.GaaMaService"
-            android:stopWithTask="false"
-            android:enabled="true"
-            android:exported="false"></service>
+        <activity android:name=".view.KeyboardActivity"></activity>
     </application>
 
 </manifest>

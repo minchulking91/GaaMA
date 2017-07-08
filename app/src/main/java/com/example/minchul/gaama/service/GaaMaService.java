@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.example.minchul.gaama.ble.GamePadHelper;
+import com.example.minchul.gaama.ble.GaaMaHelper;
 
 
 public class GaaMaService extends BaseHIDService {
@@ -29,31 +29,31 @@ public class GaaMaService extends BaseHIDService {
     public static final String BUTTON_RT = "button_rt";
 
 
-    private GamePadHelper gamePadHelper;
+    private GaaMaHelper gaaMaHelper;
 
     @Override
     public void onCreate() {
         Log.d(TAG, "Service Create!");
-        gamePadHelper = GamePadHelper.getInstance();
+        gaaMaHelper = GaaMaHelper.getInstance();
     }
 
     @Override
     public void onTaskRemoved(Intent rootIntent) {
         super.onTaskRemoved(rootIntent);
-        gamePadHelper.stopAdvertising();
+        gaaMaHelper.stopAdvertising();
         stopNotification();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        gamePadHelper.stopAdvertising();
+        gaaMaHelper.stopAdvertising();
     }
 
 
     @Override
     protected void onStopAdvertising() {
-        gamePadHelper.stopAdvertising();
+        gaaMaHelper.stopAdvertising();
         stopSelf();
     }
 
@@ -74,12 +74,12 @@ public class GaaMaService extends BaseHIDService {
         final boolean buttonRT = bundle.getBoolean(BUTTON_RT);
         final boolean buttonSTART = bundle.getBoolean(BUTTON_START);
         final boolean buttonBACK = bundle.getBoolean(BUTTON_BACK);
-        gamePadHelper.onChangeButtonStatus(stick_x, stick_y, stick_rx, stick_ry, hat_switch, buttonA, buttonB, buttonX, buttonY, buttonLB, buttonRB, buttonLT, buttonRT, buttonBACK, buttonSTART);
+        gaaMaHelper.onChangeButtonStatus(stick_x, stick_y, stick_rx, stick_ry, hat_switch, buttonA, buttonB, buttonX, buttonY, buttonLB, buttonRB, buttonLT, buttonRT, buttonBACK, buttonSTART);
     }
 
     @Override
     protected void onStartAdvertising() {
-        gamePadHelper.startAdvertising();
+        gaaMaHelper.startAdvertising();
         buildNotification();
     }
 

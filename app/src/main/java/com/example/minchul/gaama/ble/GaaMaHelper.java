@@ -6,20 +6,23 @@ import android.content.Context;
  * Created by minchul on 2017-06-07.
  */
 
-public class GamePadHelper {
-    private static final GamePadHelper instance = new GamePadHelper();
+public class GaaMaHelper {
+    private static final GaaMaHelper instance = new GaaMaHelper();
 
-    public static GamePadHelper getInstance() {
+    public static GaaMaHelper getInstance() {
         return instance;
     }
 
-    GamePadPeripheral mGamePadPeripheral;
-    private GamePadHelper() {
+    HidPeripheral hidPeripheral;
+
+    private GaaMaHelper() {
+
     }
 
     public void setContext(Context applicationContext) {
-        if(mGamePadPeripheral == null) {
-            mGamePadPeripheral = new GamePadPeripheral(applicationContext);
+        if(hidPeripheral == null) {
+//            hidPeripheral = new GamePadPeripheral(applicationContext);
+            hidPeripheral = new MousePeripheral(applicationContext);
         }
     }
 
@@ -87,15 +90,15 @@ public class GamePadHelper {
         report[5] = buttons;
         report[6] = menu_buttons;
 
-        mGamePadPeripheral.addInputReport(report);
+        hidPeripheral.addInputReport(report);
 
     }
 
     public void startAdvertising() {
-        mGamePadPeripheral.startAdvertising();
+        hidPeripheral.startAdvertising();
     }
 
     public void stopAdvertising() {
-        mGamePadPeripheral.stopAdvertising();
+        hidPeripheral.stopAdvertising();
     }
 }

@@ -8,7 +8,7 @@ public class GamePadPeripheral extends HidPeripheral {
             USAGE_PAGE(1), 0x01, //UsagePage (Generic Desktop)
             USAGE(1), 0x05, //Usage (Game Pad)
             COLLECTION(1), 0x01, //Collection (Application)
-
+            REPORT_ID(1), 0x01,
             USAGE(1), 0x01, //Usage (Pointer)
             COLLECTION(1), 0x00, //Collection (Physical)
             LOGICAL_MINIMUM(1), 0x00,
